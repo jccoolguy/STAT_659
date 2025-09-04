@@ -1,0 +1,6 @@
+---
+title: "STAT 659 Homework 1"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
