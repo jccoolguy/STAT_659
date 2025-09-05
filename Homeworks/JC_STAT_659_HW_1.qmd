@@ -4,3 +4,206 @@ author: "Jack Cunningham"
 format: pdf
 editor: visual
 ---
+
+```{r}
+library(binom)
+library(exactci)
+```
+
+5\)
+
+```{r}
+1 - dbinom(x = 35,size = 100,prob = .25)
+```
+
+6\)
+
+```{r}
+dbinom(x = c(0,1,2),size = 2, prob = .5)
+```
+
+7\)
+
+$$
+L(\pi|n,y)={n \choose y} \pi^y(1-\pi)^{n-y},{2 \choose{1}}\pi(1-\pi)^{1}
+$$
+
+8\)
+
+```{r}
+pi = seq(0,1,.01)
+plot(pi, 2*pi*(1-pi))
+```
+
+9\)
+
+$$
+L(\pi|2,0)={2 \choose 0} \pi^0(1-\pi)^{2}=(1-\pi)^{2}
+$$
+
+```{r}
+pi = seq(0,1,.01)
+plot(pi, 1*(1-pi)^2)
+```
+
+11\)
+
+```{r}
+y = 486
+n = 1374
+prop_est = y/n
+prop_est
+```
+
+12/13)
+
+```{r}
+prop_est - qnorm(1 - .0025)*sqrt(prop_est*(1-prop_est)/n)
+prop_est + qnorm(1 - .0025)*sqrt(prop_est*(1-prop_est)/n)
+```
+
+14\)
+
+$$
+Z = \frac{\hat{\pi}-\pi_0}{\sqrt{\pi(1-\pi)/n}}
+$$
+
+```{r}
+Z = (prop_est - .5)/sqrt(.5*(1-.5)/n)
+Z
+```
+
+15\)
+
+```{r}
+pnorm(Z)
+```
+
+```{r}
+binom.confint(y,n)
+```
+
+18\)
+
+```{r}
+n = 100
+y = 60
+prop = 60/100
+
+Z_stat = (prop - .5)/sqrt(.5*(1-.5)/n)
+Z_stat
+```
+
+19\)
+
+```{r}
+(1 - pnorm(abs(Z_stat)))/2
+```
+
+21\)
+
+```{r}
+binom.confint(y,n)
+```
+
+23\)
+
+```{r}
+y = 0
+n = 25
+prop = 0
+Z = (0 - .5)/sqrt(0*(1 - 0)/n)
+Z
+```
+
+24/25)
+
+```{r}
+binom.confint(y,n)
+```
+
+26\)
+
+```{r}
+Z_score = (prop - .5)/sqrt(.5*(1 - .5)/n) 
+Z_score
+```
+
+29\)
+
+```{r}
+n = 13
+y = 8
+binom.confint(y,n)
+```
+
+31\)
+
+```{r}
+treatment_A = c(9,3,6,4,5,4,4,4,3,8)
+treatment_B = c(7,7,7,6,9,10,7,14,14,9)
+n = 10
+A_mean = sum(treatment_A)/n
+B_mean = sum(treatment_B)/n
+```
+
+Wald A:
+
+```{r}
+c(A_mean - qnorm(.975)*sqrt(A_mean/n), A_mean + qnorm(.975)*sqrt(A_mean/n))
+```
+
+Wald B:
+
+```{r}
+c(B_mean - qnorm(.975)*sqrt(B_mean/n), B_mean + qnorm(.975)*sqrt(B_mean/n))
+```
+
+Score A:
+
+```{r}
+c(A_mean + qnorm(.975)^2/(2*n) - 
+    qnorm(.975)/sqrt(n)*(sqrt(A_mean + qnorm(.975)^2/(4*n))),
+  A_mean + qnorm(.975)^2/(2*n) +
+    qnorm(.975)/sqrt(n)*(sqrt(A_mean + qnorm(.975)^2/(4*n))))
+```
+
+Score B:
+
+```{r}
+c(B_mean + qnorm(.975)^2/(2*n) - 
+    qnorm(.975)/sqrt(n)*(sqrt(B_mean + qnorm(.975)^2/(4*n))),
+  B_mean + qnorm(.975)^2/(2*n) +
+    qnorm(.975)/sqrt(n)*(sqrt(B_mean + qnorm(.975)^2/(4*n))))
+```
+
+32\)
+
+```{r}
+A_mean;var(treatment_A)
+B_mean;var(treatment_B)
+```
+
+34/35)
+
+```{r}
+A_s = var(treatment_A)
+B_s = var(treatment_B)
+
+(A_s^2/A_mean -1)*sqrt((n-1)/2)
+(B_s^2/B_mean -1)*sqrt((n-1)/2)
+```
+
+36\)
+
+```{r}
+1 - pnorm((A_s^2/A_mean -1)*sqrt((n-1)/2))
+```
+
+39\)
+
+```{r}
+n = 10
+y = 8
+binom.exact(y,n,alternative = "greater",midp = TRUE)
+```
