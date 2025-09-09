@@ -5,6 +5,11 @@ format: html
 editor: visual
 ---
 
+```{r}
+library(epitools)
+library(DescTools)
+```
+
 11\)
 
 ```{r}
@@ -42,4 +47,100 @@ prop_diff
 ```{r}
 rel_risk = gunshot_props["unintentional"]/gunshot_props["terrorism"]
 rel_risk
+```
+
+19\)
+
+```{r}
+dem = .81
+rep = .22
+dem_odds = (.81)/(1-.81)
+rep_odds = (.22)/(1-.22)
+odds_ratio = dem_odds/rep_odds;odds_ratio
+```
+
+21\)
+
+```{r}
+odds = 2.9
+p = odds/(1+odds)
+p
+```
+
+22\)
+
+```{r}
+odds_m = 2.9/11.4
+odds_m
+```
+
+23\)
+
+```{r}
+p_m = odds_m/(1+odds_m)
+p_m
+```
+
+24\)
+
+```{r}
+p/p_m
+```
+
+25\)
+
+```{r}
+p_black = .847
+p_white = .906
+odds_black = p_black/(1 - p_black)
+odds_white = p_white/(1 - p_white)
+odds_black/odds_white
+```
+
+27\)
+
+```{r}
+data = matrix(c(433,570,8049,554883),nrow = 2)
+p_no = data[1,1]/sum(data[1,])
+p_yes = data[2,1]/sum(data[2,])
+odds_no = p_no/(1 - p_no)
+odds_yes = p_yes/(1 - p_yes)
+odds_no/odds_yes
+oddsratio(data, method = "wald")$measure
+```
+
+28/29)
+
+```{r}
+data = matrix(c(802,34,53,494), nrow = 2)
+oddsratio(data, method = "wald")$measure
+```
+
+31/32)
+
+```{r}
+data = c(189,104,10845,10933)
+n1 = 11034
+n2 = 11037
+p1 = 189/11034
+p2 = 104/11037
+
+log_conf_int = log(p1/p2) + c(-1,1)*
+  qnorm(.975)*sqrt((1 - p1)/(n1*p1) + (1 - p2)/(n2*p2))
+conf_int = exp(log_conf_int)
+conf_int
+```
+
+32\)
+
+```{r}
+BinomDiffCI(189,n1,104,n2,method = "wald")
+BinomDiffCI(189,n1,104,n2,method = "score")
+BinomDiffCI(189,n1,104,n2,method = "ac")
+```
+
+34\)
+
+```{r}
+1/0.0077
 ```
