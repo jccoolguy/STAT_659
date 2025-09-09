@@ -1,0 +1,45 @@
+---
+title: "STAT 659 HW 2"
+author: "Jack C"
+format: html
+editor: visual
+---
+
+11\)
+
+```{r}
+us = 62.4
+brit = 1.3
+
+prop_diff =  us - brit
+prop_diff
+```
+
+12\)
+
+```{r}
+rel_risk = us/brit
+rel_risk
+```
+
+15\)
+
+```{r}
+gunshot_categories <- c("assault","unintentional","suicide","undetermined",
+                        "law enforcement","terrorism")
+gunshot <- c(179793, 65502, 24624, 17401, 5266, 10)
+names(gunshot) <- gunshot_categories
+
+gunshot_props = gunshot/sum(gunshot)
+gunshot_props
+
+prop_diff = gunshot_props["unintentional"] - gunshot_props["terrorism"]
+prop_diff
+```
+
+16\)
+
+```{r}
+rel_risk = gunshot_props["unintentional"]/gunshot_props["terrorism"]
+rel_risk
+```
