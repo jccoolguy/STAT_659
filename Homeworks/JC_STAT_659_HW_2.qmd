@@ -10,6 +10,12 @@ library(epitools)
 library(DescTools)
 ```
 
+1\)
+
+7\)
+
+9\)
+
 11\)
 
 ```{r}
@@ -25,6 +31,14 @@ prop_diff
 ```{r}
 rel_risk = us/brit
 rel_risk
+```
+
+14\)
+
+```{r}
+odds = c(9/2,5/1,11/2,20/1,7/1)
+probs = odds/(1+odds)
+1 - probs
 ```
 
 15\)
