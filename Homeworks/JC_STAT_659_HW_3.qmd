@@ -1,0 +1,48 @@
+---
+title: "STAT 659 HW 3"
+format: pdf
+editor: visual
+---
+
+1/2)
+
+```{r}
+data = matrix(c(21,53,94,159, 372, 249, 110, 221, 83), nrow = 3, ncol = 3)
+exp  = matrix(c(35.8 ,79.7, 52.5, 166.1, 370, 244, 88.1, 196.4, 129.5),
+              nrow = 3, ncol = 3)
+chisq.test(data, p = exp/sum(exp))
+X2 <- sum((data - exp)^2/exp)
+1 - pchisq(X2, 4)
+```
+
+6\)
+
+```{r}
+mosaicplot(data)
+```
+
+7\)
+
+```{r}
+lineartrend<-function(data,rownums,colnums){
+  numericdata<-matrix(NA,nrow=0,ncol=2)
+  for(i in 1:nrow(data)){
+    for(j in 1:ncol(data)){
+      ni<-data[i,j]
+      adddata<-cbind(rep(rownums[i],ni),rep(colnums[j],ni))
+      numericdata<-rbind(numericdata,adddata)
+    }
+  }
+  fit<-cor.test(numericdata[,1],numericdata[,2])
+  r<-fit$estimate
+  m2<-fit$estimate^2*(nrow(numericdata)-1)
+  pvalue<-1-pchisq(m2,1)
+  ans<-cbind(r,round(m2,4),pvalue)
+  colnames(ans)<-c("r","M2","p-value")
+  ans
+}
+
+
+data<-rbind(c(21,159,110),c(53,372,221),c(94,249,83))
+lineartrend(data,c(1,2,3),c(1,2,3))
+```
