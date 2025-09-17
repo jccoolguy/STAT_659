@@ -144,3 +144,100 @@ X2
 ```{r}
 lineartrend(obs_data,c(3,10,20,35),c(1,3,4,5))
 ```
+
+27\)
+
+```{r}
+obs_data = matrix(c(7,0,8,15),nrow = 2,dimnames = list(c("Treatment","Control"),
+                                                      c("Achieve","Not Achieve")))
+obs_data
+```
+
+```{r}
+fisher.test(obs_data,alternative = "greater")
+```
+
+29\)
+
+```{r}
+data = matrix(c(21,15,2,3),nrow = 2, dimnames = list(c("Surgery", "Rad"),
+                                                     c("Control","N Control")))
+data
+```
+
+```{r}
+fisher.test(data)
+```
+
+```{r}
+library(epitools)
+ormidp.test(21,2,15,3)
+```
+
+31\)
+
+```{r}
+data = c(15,18,8,22,10,19,14,14,18,12)
+exp_data = rep(15,10)
+X2 = sum((data - exp_data)^2/exp_data)
+X2
+```
+
+32\)
+
+```{r}
+1 - pchisq(X2,9)
+```
+
+34\)
+
+```{r}
+n = 1301
+data = c(773,221,238,69)
+exp_props = c(9/16,3/16,3/16,1/16)
+exp_data  = n*exp_props
+X2 = sum((data - exp_data)^2/exp_data)
+X2
+```
+
+35\)
+
+```{r}
+1 - pchisq(X2, 3)
+```
+
+37\)
+
+```{r}
+data = c(1997, 906, 904, 32)
+n = sum(data)
+```
+
+```{r}
+theta = seq(0,1,.00001)
+log_like = 1997*log(1/4*(2+theta)) + 906*log(1/4*(1-theta)) +
+  904*log(1/4*(1-theta))+32*log(1/4*theta)
+theta_hat = theta[which.max(log_like)]
+```
+
+```{r}
+plot(x = theta, y = log_like, type = "l")
+```
+
+```{r}
+exp_data = n*1/4*c(2+theta_hat, 1 - theta_hat, 1 - theta_hat, theta_hat)
+exp_data
+```
+
+38\)
+
+```{r}
+X2 = sum((data - exp_data)^2/exp_data)
+X2
+```
+
+39\)
+
+```{r}
+1 - pchisq(X2, 3)
+```
