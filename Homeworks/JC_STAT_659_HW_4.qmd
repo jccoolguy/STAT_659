@@ -1,0 +1,104 @@
+---
+title: "JC STAT 659 HW 4"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(epitools)
+library(DescTools)
+```
+
+2\)
+
+```{r}
+smith_2005 <- 104/411
+jones_2005 <- 12/48
+smith_2006 <- 45/140
+jones_2006 <- 183/583
+smith_combined <- 149/551
+jones_combined <- 195/630
+
+```
+
+3\)
+
+```{r}
+odds_ratio_given_white <- (19*52)/(132*11)
+odds_ratio_given_white
+```
+
+4\)
+
+```{r}
+odds_ratio_given_black <- (0*97)/(9*6)
+```
+
+5\)
+
+```{r}
+odds_ratio_marginal <- (19*149)/(141*17)
+```
+
+7\)
+
+8\)
+
+```{r}
+data <- array(c(512,89,313,19,
+                353,17,207,8,
+                120,202,205,391,
+                138,131,279,244,
+                53,94,138,299,
+                22,24,351,317),dim = c(2,2,6))
+data2 <- c(512,89,313,19,
+                353,17,207,8,
+                120,202,205,391,
+                138,131,279,244,
+                53,94,138,299,
+                22,24,351,317)
+```
+
+```{r}
+oddsratio(data[,,1], method = "wald")$measure
+```
+
+```{r}
+oddsratio(data[,,2], method = "wald")$measure
+```
+
+```{r}
+oddsratio(data[,,3], method = "wald")$measure
+```
+
+```{r}
+oddsratio(data[,,4], method = "wald")$measure
+```
+
+```{r}
+oddsratio(data[,,5], method = "wald")$measure
+```
+
+```{r}
+oddsratio(data[,,6], method = "wald")$measure
+```
+
+10\)
+
+```{r}
+BreslowDayTest(data)
+```
+
+13\)
+
+```{r}
+mantelhaen.test(data, correct = FALSE)
+```
+
+17\)
+
+```{r}
+data_dep_2_6 = data[,,2:6]
+BreslowDayTest(data_dep_2_6)
+```
