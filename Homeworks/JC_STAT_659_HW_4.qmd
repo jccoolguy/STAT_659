@@ -166,18 +166,200 @@ result = c(rep(1,48),rep(0,17114),rep(1,38),rep(0,14502),
            rep(1,5),rep(0,793),rep(1,1),rep(0,127),rep(1,1),rep(0,38))
 alc    = c(rep(0,48 + 17114),rep(.5,38 + 14502), rep(1.5, 5 + 793),
            rep(4, 1 + 127), rep(7, 1 + 38))
-summary(lm(result ~ alc))
+summary(glm(result ~ alc, family = binomial(link = "identity")))
 ```
 
+38\)
+
 ```{r}
-comb = cbind(result,alc)
-table(comb[result == 1,]
+p_0 = 0.0025417
 ```
+
+39\)
+
+```{r}
+p_7 = p_0 + 0.0010787*7
+```
+
+40\)
+
+```{r}
+rr_7_0 = p_7/p_0
+rr_7_0
+```
+
+41\)
 
 ```{r}
 result = c(rep(1,48),rep(0,17114),rep(1,38),rep(0,14502),
            rep(1,5),rep(0,793),rep(1,1),rep(0,127),rep(1,1),rep(0,38))
 alc    = c(rep(0,48 + 17114),rep(1,38 + 14502), rep(2, 5 + 793),
            rep(3, 1 + 127), rep(4, 1 + 38))
-summary(lm(result ~ alc))
+summary(glm(result ~ alc, family = binomial(link = "identity")))
+```
+
+```{r}
+pr_0 <- 0.0025911
+pr_7 <- 0.0025911 + 0.0005011*7
+```
+
+```{r}
+rr_7_0 = pr_7/pr_0
+rr_7_0
+```
+
+43\)
+
+```{r}
+result = c(rep(1,48),rep(0,17114),rep(1,38),rep(0,14502),
+           rep(1,5),rep(0,793),rep(1,1),rep(0,127),rep(1,1),rep(0,38))
+alc    = c(rep(0,48 + 17114),rep(.5,38 + 14502), rep(1.5, 5 + 793),
+           rep(4, 1 + 127), rep(7, 1 + 38))
+fit <- glm(result ~ alc, family = binomial())
+summary(fit)
+```
+
+```{r}
+p_0 = predict(fit, newdata = data.frame(alc = 0), type = "response")
+p_0
+p_7 = predict(fit, newdata = data.frame(alc = 7), type = "response")
+p_7
+rr_7_0 = p_7/p_0
+rr_7_0
+```
+
+```{r}
+result = c(rep(1,48),rep(0,17114),rep(1,38),rep(0,14502),
+           rep(1,5),rep(0,793),rep(1,1),rep(0,127))
+alc    = c(rep(0,48 + 17114),rep(.5,38 + 14502), rep(1.5, 5 + 793),
+           rep(4, 1 + 127))
+fit <- glm(result ~ alc, family = binomial())
+summary(fit)
+
+```
+
+```{r}
+p_0 = predict(fit, newdata = data.frame(alc = 0), type = "response")
+p_0
+p_7 = predict(fit, newdata = data.frame(alc = 7), type = "response")
+p_7
+rr_7_0 = p_7/p_0
+rr_7_0
+```
+
+45\)
+
+46\)
+
+```{r}
+pi_hat = -.0003 + 0.0304*.0774
+pi = 0.0079
+pi/pi_hat
+```
+
+47\)
+
+```{r}
+horseshoe <- as.data.frame(read.delim("horseshoe.txt", sep = ""))
+```
+
+```{r}
+fit <- glm(data = horseshoe, y ~ weight, family = binomial(link = "identity"))
+```
+
+```{r}
+fit <- lm(data = horseshoe, y ~ weight)
+summary(fit)
+```
+
+49\)
+
+```{r}
+predict(fit, newdata = data.frame(weight = 5.2), type = "response")
+```
+
+51\)
+
+```{r}
+fit <- glm(data = horseshoe, y ~ weight, family = binomial())
+summary(fit)
+```
+
+```{r}
+predict(fit, data.frame(weight = 5.2), type = "response")
+```
+
+54\)
+
+```{r}
+response = c(rep(1,24),rep(0,1355),rep(1,35),rep(0,603),rep(1,21),rep(0,192),
+             rep(1,30),rep(0,224))
+score_1 = c(rep(1,24 + 1355), rep(2,35 + 603), rep(3, 21 + 192), rep(4, 30 + 224))
+score_2 = c(rep(0,24 + 1355), rep(1,35 + 603), rep(2, 21 + 192), rep(3, 30 + 224))
+score_3 = c(rep(0,24 + 1355), rep(2,35 + 603), rep(4, 21 + 192), rep(6, 30 + 224))
+score_4 = c(rep(0,24 + 1355), rep(2,35 + 603), rep(6, 21 + 192), rep(7, 30 + 224))
+score_5 = c(rep(0,24 + 1355), rep(20,35 + 603), rep(60, 21 + 192), 
+            rep(70, 30 + 224))
+
+```
+
+```{r}
+model_1 = glm(response ~ score_1, family = binomial())
+model_2 = glm(response ~ score_2, family = binomial())
+model_3 = glm(response ~ score_3, family = binomial())
+model_4 = glm(response ~ score_4, family = binomial())
+model_5 = glm(response ~ score_5, family = binomial())
+```
+
+```{r}
+coef(model_1)
+coef(model_2)
+coef(model_3)
+coef(model_4)
+coef(model_5)
+```
+
+```{r}
+predict(model_1, newdata = data.frame(score_1 = unique(score_1)), 
+        type = "response")
+predict(model_2, newdata = data.frame(score_2 = unique(score_2)),
+        type = "response")
+predict(model_3, newdata = data.frame(score_3 = unique(score_3)),
+        type = "response")
+predict(model_4, newdata = data.frame(score_4 = unique(score_4)),
+        type = "response")
+predict(model_5, newdata = data.frame(score_5 = unique(score_5)),
+        type = "response")
+```
+
+56\)
+
+```{r}
+library(tidyverse)
+credit <- as.data.frame(read.delim("Credit.txt", sep = "")) |> 
+  mutate(cardholders = cards, noncardholders = n - cardholders)
+```
+
+```{r}
+y = c()
+for(i in 1:dim(credit)[1]){
+  holders = rep(1,credit[i,"cardholders"])
+  non_holders = rep(0, credit[i,"noncardholders"])
+  y = c(y,holders,non_holders)
+}
+income = c()
+for(i in 1:dim(credit)[1]){
+  income = c(income, rep(credit[i,"income"],credit[i,"n"]))
+}
+```
+
+```{r}
+fit = glm(formula = y ~ income, family = binomial())
+summary(fit)
+```
+
+58\)
+
+```{r}
+predict(fit, newdata = data.frame(income = 33.4), type = "response")
 ```
