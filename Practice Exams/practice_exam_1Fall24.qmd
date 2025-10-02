@@ -1,0 +1,115 @@
+---
+title: "Practice Exam Fall 2024"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+mean = 20
+1 - ppois(30,mean)
+```
+
+2\)
+
+```{r}
+p = .04
+n = 35
+1 - pbinom(0,n,p)
+```
+
+4\)
+
+```{r}
+p_1 = 12/(12 + 112)
+p_2 = 10/(10 + 118)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+5\)
+
+```{r}
+epitools::oddsratio(c(12,112,10,118),method="wald")$measure
+```
+
+```{r}
+log(odds_1) - log(odds_2)
+```
+
+```{r}
+log(odds_1) - log(odds_2) + c(1,-1)*1.96*sqrt(1/12+1/10+1/112+1/118)
+```
+
+8\)
+
+```{r}
+library(binom)
+x = 2
+n = 29
+binom::binom.confint(x,n)
+```
+
+9\)
+
+```{r}
+p = c(.52,.13,.12,.11,.07,.05)
+data = c(70,9,11,10,8,7)
+chisq.test(data,p=p)
+```
+
+11\)
+
+```{r}
+data <- read.table("smartcar.txt",header = TRUE)
+data
+```
+
+```{r}
+fit <- glm(data = data, smartcar ~ height, family = binomial)
+summary(fit)
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(height = 5), type = "response")
+xhat = seq(2,8,.01)
+yhat = predict.glm(fit, newdata = data.frame(height = xhat), type = "response")
+plot(xhat,yhat,type = "l")
+```
+
+14\)
+
+```{r}
+p_1 = 28/(18 + 28)
+p_2 = 13/(13 + 10)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+16\)
+
+```{r}
+p_1 = 49/(49 + 63)
+p_2 = 7/(7 + 10)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+18\)
+
+```{r}
+data = matrix(c(28 + 49, 13 + 7, 18 + 63, 10 + 10), nrow = 2)
+data
+```
+
+```{r}
+p_1 = 77 /(77 + 81)
+p_2 = 20 /(20 + 20)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```

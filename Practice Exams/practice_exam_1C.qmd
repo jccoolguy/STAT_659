@@ -1,0 +1,75 @@
+---
+title: "Practice Exam C"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+mean = 1.25
+1 - ppois(5,mean)
+```
+
+2\)
+
+```{r}
+data = c(54,80,55,30,21,14)
+chisq.test(data,p=c(.25,.35,.2,.1,.06,.04))
+```
+
+6\)
+
+```{r}
+p = .2 + .1 + .06 + .04
+1 - pbinom(99,254,p)
+```
+
+7\)
+
+```{r}
+data = matrix(c(75,28,25,22),nrow = 2)
+p_2 = 28/(28 + 75)
+p_1 = 22/(22 + 25)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+9\)
+
+```{r}
+library(epitools)
+epitools::oddsratio(data,method="wald")$measure
+```
+
+12\)
+
+15\)
+
+```{r}
+data = array(c(74,29,26,21,79,25,21,25),dim = c(2,2,2))
+data
+library(DescTools)
+BreslowDayTest(data)
+```
+
+19\)
+
+```{r}
+data <- read.table("trampoline.txt",header = TRUE)
+data
+```
+
+```{r}
+n = dim(data)[1]
+fit <- glm(data = data, trampoline~children,family=binomial)
+summary(fit)
+```
+
+```{r}
+xhat = 3
+predict.glm(fit, newdata = data.frame(children = xhat), type = "response")
+predict.glm(fit, newdata = data.frame(children = 0), type = "response")
+```

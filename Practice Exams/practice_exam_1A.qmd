@@ -1,0 +1,90 @@
+---
+title: "Exam 1 Practice A"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+data = matrix(c(118,90,128,120,12,42), nrow = 2)
+data
+```
+
+2/3)
+
+```{r}
+chisq.test(data)
+```
+
+6\)
+
+7\)
+
+```{r}
+p_1 = 20/(20+98)
+p_2 = 18/(18+118)
+odds_1  = p_1/(1-p_1)
+odds_2  = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+9\)
+
+```{r}
+library(epitools)
+data = matrix(c(118,18,98,20),nrow = 2)
+epitools::oddsratio(data,method="wald")
+
+```
+
+9 log)
+
+```{r}
+l_odds_1 = log(odds_1)
+l_odds_2 = log(odds_2)
+l_odds_1 - l_odds_2
+
+
+DescTools::BinomDiffCI(20,20 + 98,18,18 + 118,method="wald")
+```
+
+10\)
+
+12\)
+
+```{r}
+data = array(c(42,10,35,10,76,8,63,10),dim = c(2,2,2))
+data
+p_1 = 42/(42+10)
+p_2 = 35/(35+10)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+13\)
+
+```{r}
+p_1 = 76/(76+8)
+p_2 = 63/(63+10)
+odds_1 = p_1/(1 - p_1)
+odds_2 = p_2/(1 - p_2)
+odds_1/odds_2
+```
+
+14\)
+
+```{r}
+p_1 = 118/(118+18)
+p_2 = 98/(98 + 20)
+p_1/p_2
+```
+
+15\)
+
+```{r}
+library(DescTools)
+DescTools::BreslowDayTest(data)
+```
