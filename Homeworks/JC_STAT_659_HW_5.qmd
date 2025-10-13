@@ -1,0 +1,111 @@
+---
+title: "STAT 659 HW 5"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1/2/3)
+
+```{r}
+t_a = c(8,7,6,6,3,4,7,2,3,4)
+t_b = c(9,9,8,14,8,13,11,5,7,6)
+counts = c(t_a,t_b)
+treatment = c(rep(0,10),rep(1,10))
+fit <- glm(counts ~ treatment, family = poisson)
+summary(fit)
+```
+
+4\)
+
+```{r}
+fit_reduced <- glm(counts ~ 1, family = poisson)
+L_full = 27.857
+L_red  = 16.268
+L_diff = L_full - L_red
+1 - pchisq(L_diff,df = 1)
+```
+
+```{r}
+anova(fit_reduced, fit)
+```
+
+```{r}
+library(lmtest)
+lrtest(fit, fit_reduced)
+```
+
+6/7)
+
+```{r}
+exp(confint(fit))
+```
+
+8\)
+
+```{r}
+crabs <- read.table("crabs.txt",header = TRUE)
+```
+
+```{r}
+fit <- glm(satell ~ weight, family = poisson, data = crabs)
+summary(fit)
+```
+
+9\)
+
+```{r}
+predict.glm(fit, newdata = data.frame(weight = 2.44), type = "response")
+```
+
+10\)
+
+```{r}
+confint(fit)
+```
+
+13\)
+
+```{r}
+dev_full = 632.79
+dev_red  = 560.87
+dev_diff = dev_full - dev_red
+```
+
+```{r}
+fit_red <- glm(satell ~ 1, family = poisson, data = crabs)
+```
+
+```{r}
+lrtest(fit_red, fit)
+```
+
+15\)
+
+```{r}
+library(MASS)
+fit_nb = glm.nb(satell ~ weight, data = crabs)
+summary(fit_nb)
+```
+
+17\)
+
+```{r}
+AIC(fit)
+AIC(fit_nb)
+```
+
+```{r}
+library(pscl)
+zero_weight_poisson <- zeroinfl(satell ~ weight|weight, data = crabs)
+AIC(zero_weight_poisson)
+zero_weight_nb <- zeroinfl(satell ~ weight|weight, data = crabs,
+                                dist = "negbin")
+AIC(zero_weight_nb)
+
+zero_int_poisson <- zeroinfl(satell ~ weight|1, data = crabs)
+AIC(zero_int_poisson)
+zero_int_nb <- zeroinfl(satell ~ weight|1, data = crabs,
+                                dist = "negbin")
+AIC(zero_int_nb)
+```
