@@ -187,5 +187,55 @@ summary(fit_nb)
 31\)
 
 ```{r}
-smokers <- read.table("smoker")
+smokers <- read.table("smokerdeaths.txt",header = TRUE)
+```
+
+```{r}
+smokers_df <- smokers |> 
+  mutate(non_rate = 1000*(nondeaths)/(nonyears), smoke_rate =
+           1000*(smokedeaths)/(smokeyears)) |> 
+  mutate(rel_risk = non_rate/smoke_rate)
+smokers_df
+```
+
+34\)
+
+```{r}
+smokers_df_model <- data.frame(
+  age = c('35-44','35-44','45-54','45-54','55-64','55-64',
+          '65-74','65-74','75-84','75-84'),
+  smoker = c(0,1,0,1,0,1,0,1,0,1),
+  years  = c(18793,52407,10673,43248,5710,28612,2585,12663,1462,5317),
+  deaths = c(2,32,12,104,28,206,28,186,31,102)
+)
+  
+```
+
+```{r}
+fit <- glm(deaths ~ age + smoker + offset(log(years)), 
+           family = poisson(), data = smokers_df_model)
+summary(fit)
+```
+
+37\)
+
+```{r}
+smokers_df_model_2 <- data.frame(
+  age_num = c(1,1,2,2,3,3,4,4,5,5),
+  age_cat = c('35-44','35-44','45-54','45-54','55-64','55-64',
+          '65-74','65-74','75-84','75-84'),
+  smoker = c(0,1,0,1,0,1,0,1,0,1),
+  years  = c(18793,52407,10673,43248,5710,28612,2585,12663,1462,5317),
+  deaths = c(2,32,12,104,28,206,28,186,31,102)
+)
+```
+
+```{r}
+fit_2 <- glm(deaths ~  age_cat + smoker + age_num:smoker + offset(log(years)), 
+           family = poisson(), data = smokers_df_model_2)
+summary(fit_2)
+```
+
+```{r}
+lrtest(fit_2,fit)
 ```
