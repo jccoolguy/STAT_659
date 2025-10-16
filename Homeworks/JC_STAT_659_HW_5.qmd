@@ -168,6 +168,24 @@ summary(fit_teams)
 ```{r}
 library(tidyverse)
 soccer |> 
-  mutate(rate = arrests/attendance) +
-  arrange(rate)
+  mutate(rate = arrests/attendance) |> 
+  arrange(desc(rate))
+```
+
+28\)
+
+```{r}
+fit_nb <- glm.nb(arrests ~ 1 + offset(log(attendance)),
+           data = soccer)
+summary(fit_nb)
+```
+
+```{r}
+1/3.135 + c(-1,1)*1.96*.920
+```
+
+31\)
+
+```{r}
+smokers <- read.table("smoker")
 ```
