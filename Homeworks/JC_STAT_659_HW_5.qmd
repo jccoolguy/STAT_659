@@ -109,3 +109,65 @@ zero_int_nb <- zeroinfl(satell ~ weight|1, data = crabs,
                                 dist = "negbin")
 AIC(zero_int_nb)
 ```
+
+19\)
+
+```{r}
+Cancerdata <- read.table("lungCancer.txt",header = TRUE)
+```
+
+```{r}
+fit <- glm( count ~ factor(histology) + factor(stage) + factor(time), family=poisson(link="log"),offset=log(risktime),data= Cancerdata)
+summary(fit)
+```
+
+```{r}
+fit_interaction <- fit <- glm(count ~ factor(histology) + factor(stage)*factor(time), family=poisson(link="log"),offset=log(risktime),data=Cancerdata)
+summary(fit_interaction)
+```
+
+```{r}
+library(car)
+Anova(fit_interaction)
+```
+
+21\)
+
+```{r}
+fit_simple = glm( count ~ factor(stage) + factor(time), family=poisson(link="log"),offset=log(risktime),data= Cancerdata)
+  
+```
+
+```{r}
+lrtest(fit_interaction, fit_simple)
+```
+
+22\)
+
+```{r}
+summary(fit_simple)
+```
+
+26\)
+
+```{r}
+soccer <- read.table("soccerteams.txt",header = TRUE)
+fit <- glm(arrests ~ 1, offset = log(attendance),
+           data = soccer, family = poisson)
+summary(fit)
+```
+
+27\)
+
+```{r}
+fit_teams <- glm(arrests ~ teams, offset = log(attendance),
+           data = soccer, family = poisson)
+summary(fit_teams)
+```
+
+```{r}
+library(tidyverse)
+soccer |> 
+  mutate(rate = arrests/attendance) +
+  arrange(rate)
+```
