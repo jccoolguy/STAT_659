@@ -131,3 +131,47 @@ plot(age_seq, prob_seq)
 fit_reduced <- glm(y ~ x, family = binomial, data = kyphosis)
 lrtest(fit,fit_reduced)
 ```
+
+22\)
+
+```{r}
+crab <- read.table("crabs.txt", header = TRUE)
+head(crab)
+```
+
+```{r}
+fit <- glm(y ~ factor(color)*width,data = crab, family = binomial)
+summary(fit)
+```
+
+23\)
+
+```{r}
+width_seq = seq(20, 34, .5)
+color_2 = rep(2,29)
+color_3 = rep(3,29)
+color_4 = rep(4,29)
+color_5 = rep(5,29)
+
+probs_2 = predict.glm(fit, data.frame(width = width_seq, color = color_2), 
+            type = "response")
+probs_3 = predict.glm(fit, data.frame(width = width_seq, color = color_3), 
+            type = "response")
+
+probs_4 = predict.glm(fit, data.frame(width = width_seq, color = color_4), 
+            type = "response")
+
+probs_5 = predict.glm(fit, data.frame(width = width_seq, color = color_5), 
+            type = "response")
+plot(width_seq, probs_2,type = "l",ylim = c(0,1), col = "red")
+lines(width_seq, probs_3, type = "l", col = "green")
+lines(width_seq, probs_4, type = "l", col = "blue")
+lines(width_seq, probs_5, type = "l", col = "yellow")
+```
+
+24\)
+
+```{r}
+fit_reduced = glm(y ~ factor(color) + width,data = crab, family = binomial)
+lrtest(fit, fit_reduced)
+```
