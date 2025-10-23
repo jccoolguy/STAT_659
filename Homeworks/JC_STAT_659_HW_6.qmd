@@ -92,3 +92,42 @@ beta_1 = coef(fit)[2]
 -beta_0/beta_1
 predict.glm(fit, data.frame(Temp = -beta_0/beta_1), type = "response")
 ```
+
+14\)
+
+```{r}
+.5*(1 - .5)*beta_1
+```
+
+16\)
+
+```{r}
+kyphosis <- read.table("Kyphosis.txt",header = TRUE)
+head(kyphosis)
+```
+
+```{r}
+plot(kyphosis$x, kyphosis$y)
+```
+
+17\)
+
+```{r}
+fit <- glm(y ~ x + I(x^2),data = kyphosis, family = binomial)
+summary(fit)
+```
+
+18\)
+
+```{r}
+age_seq = seq(0, 250, .5)
+prob_seq = predict.glm(fit, data.frame(x = age_seq), type = "response")
+plot(age_seq, prob_seq)
+```
+
+19\)
+
+```{r}
+fit_reduced <- glm(y ~ x, family = binomial, data = kyphosis)
+lrtest(fit,fit_reduced)
+```
