@@ -1,0 +1,94 @@
+---
+title: "STAT 659 HW 6"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
+
+1\)
+
+```{r}
+LI<-c(8,8,10,10,12,12,12,14,14,14,16,16,16,18,20,20,20,22,22,24,26,28,32,34,38,38,38)
+y<-c(0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,0,0,1,1,0,1,1,1,0)
+fit<-glm(y~LI,family=binomial(link=logit))
+summary(fit)
+```
+
+```{r}
+predict.glm(fit, data.frame(LI = 26), type = "response")
+```
+
+2\)
+
+```{r}
+exp(coef(fit)[2])
+```
+
+3\)
+
+```{r}
+LI_seq = seq(8,38,.1)
+pred_seq <- predict.glm(fit,data.frame(LI = LI_seq),type = "response")
+plot(LI_seq, pred_seq, ylim = c(0,1))
+```
+
+4\)
+
+```{r}
+beta = coef(fit)[2]
+pi   = predict.glm(fit, data.frame(LI = 8), type = "response")
+beta*pi*(1 - pi)
+```
+
+5\)
+
+```{r}
+pi = predict.glm(fit,type = "response")
+mean(beta*pi*(1 - pi))
+```
+
+7\)
+
+```{r}
+library(lmtest)
+lrtest(fit)
+```
+
+```{r}
+test_stat = 34.372 - 26.073
+```
+
+```{r}
+exp(confint.default(fit))
+```
+
+```{r}
+exp(confint(fit))
+```
+
+10\)
+
+```{r}
+shuttle <- read.table("Shuttle.txt",header = TRUE)
+head(shuttle)
+```
+
+```{r}
+fit <- glm(TD ~ Temp, family = binomial, data = shuttle)
+summary(fit)
+```
+
+12\)
+
+```{r}
+predict.glm(fit, data.frame(Temp = 31), type = "response")
+```
+
+13\)
+
+```{r}
+beta_0 = coef(fit)[1]
+beta_1 = coef(fit)[2]
+-beta_0/beta_1
+predict.glm(fit, data.frame(Temp = -beta_0/beta_1), type = "response")
+```
