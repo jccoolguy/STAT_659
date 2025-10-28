@@ -1,0 +1,126 @@
+---
+title: "STAT 659 HW 7"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
+
+1\)
+
+```{r}
+throat <- read.table("SoreThroat_2.txt", header = TRUE)
+head(throat)
+```
+
+```{r}
+fit <- glm(Y ~ T*D, data = throat, family = binomial())
+summary(fit)
+```
+
+```{r}
+c(coef(fit)[1],coef(fit)[3])
+c(coef(fit)[1] + coef(fit)[2], coef(fit)[3] + coef(fit)[4])
+```
+
+2\)
+
+```{r}
+library(pROC)
+```
+
+```{r}
+roc(throat$Y ~ predict.glm(fit, type = "response"), plot = TRUE,
+    xlim = c(1,0))
+```
+
+3\)
+
+```{r}
+reduced_fit <- glm(Y ~ T + D, data = throat, family = binomial())
+summary(reduced_fit)
+```
+
+```{r}
+library(lmtest)
+```
+
+```{r}
+lrtest(fit,reduced_fit)
+```
+
+4\)
+
+```{r}
+roc(throat$Y ~ predict.glm(fit, type = "response"))$auc
+roc(throat$Y ~ predict.glm(reduced_fit, type = "response"))$auc
+```
+
+5\)
+
+```{r}
+students = read.table("Students.txt",header = TRUE)
+head(students)
+```
+
+```{r}
+students$affil <- factor(students$affil)
+```
+
+```{r}
+fit = glm(veg ~ . -subject, family = binomial(), data = students)
+summary(fit)
+```
+
+```{r}
+lrtest(fit)
+```
+
+```{r}
+summary(glm(veg ~ . - subject - dhome - news - cogpa
+            - age - aids - affirm - tv
+            - abor - affil - gender - life - dres
+            - hsgpa - sport, family = binomial(), data = students))
+```
+
+8\)
+
+```{r}
+crab <- read.table("crabs.txt", header = TRUE)
+head(crab)
+```
+
+```{r}
+fit <- glm(y ~ weight, family = binomial, data = crab)
+summary(fit)
+```
+
+```{r}
+y_pred = as.integer(predict.glm(fit, type = "response") > .642)
+```
+
+```{r}
+table(crab$y, y_pred)
+```
+
+9\)
+
+```{r}
+68/(68 + 43)
+```
+
+10\)
+
+```{r}
+45/(45 + 17)
+```
+
+11\)
+
+```{r}
+roc(crab$y ~ predict.glm(fit, type = "response") , plot = TRUE, xlim = c(1,0))
+```
+
+```{r}
+library(generalhoslem)
+logitgof(crab$y, fitted(fit), g = 10)
+```
