@@ -103,3 +103,75 @@
 # x		glm(y~x,family=binomial(link="probit"))
 # x		logit into probabilities
 # x		predict.glm(fit,data.frame(x),type="response")
+# x	5	Poisson Regression
+# x		glm(y~x,family=poisson(link=log))
+# x		when x is 0/1 beta is the difference
+# x		Describes a rate of occurance
+# x		dummy variables
+# x		log difference is going to be quotient
+# x		As x increases by 1 y increases by exp(beta) as a percent
+# x		Wald test for poisson regression
+# x		Likelihood ratio test for poisson regression
+# x		anova(fit) for individual items
+# x		anova(fit1,fit2) for nested models
+# x		car::Anova
+# x		confint(fit)
+# x		predict.glm(fit,data.frame(x),type="response")
+# x		Wald CI for poisson theta: y/n+-Zsqrt(y/n*(1-y/n)/n)
+# x		comparing two models against each other
+# x		lmtest:lrtest
+# x		ANOVA for testing categorical terms in a model
+# x		library(MASS);glm.nb(y~x,data=data)
+# x		Zero inflated models
+# x		pscl::zeroinfl(y~x|zero terms,data=data,dist=c("poisson","negbin")
+#x		AIC(fit)
+#x		MASS::glm.nb(y~x+offset(z))
+#x		Negative binomial allows larger variance than poisson
+#                   x		dispersion parameter theta measures how much more variance
+#                   x		var=mu+mu^2/theta   
+#                   x		In R theta very large if poisson
+#                   x		CI for 1/theta would want zero in the interval
+#                   x		fit$theta and fit$SE.theta from glm.nb
+#                   x		Poisson regression with all categorical predictors
+#                   x		Log-linear modeling
+#                   x		offset to describe rate per numerical count
+#                   x	6	rate of change for p in logistic regression
+#                   x		sensitivity and specificity
+#                   x		predict.glm(fit,data.frame(x),type="response",se.fit=TRUE)
+#                   x		confint(fitlogistic) for likelihood CI
+#                   x		confint.default(fitlogistic) for wald CI
+#                   x		d/dx = pi*(1-pi)B1
+#                   x		Marginal effect of B1
+#                   x		E(dpi/dx)
+#                   x		1/n*sum(pi(1-pi)B1)
+#                   x		mfx::logitmfx(fit,atmean=FALSE,data=data.frame(x,y))
+#                   x		logitmfx(x,atmean=FALSE,data=data) use the data predictions, not xhat
+#                   x	7	pROC::roc(data$Y~predict(fit,type="response")
+#                                 x		ROC means Recieving Operator Characteristic
+#                                 x		pROC::roc(data$Y~predict(fit,type="response",plot=TRUE))
+#                                 x		fitted(fit)
+#                                 x		Classfication vs confusion table
+#                                 x		table(data$y,fitted(fit)>0.5)
+#                                 x		roc(data$y~predict(fit,type="response"),plot=TRUE,smooth=TRUE)
+#                                 x		coords(myroc,x=.8)
+#                                 x		coords(myroc,x="best")
+#                                 x		coords(myroc,x=.8,input="sensitivity")
+#                                 x		Looking at residuals as binary table 0/1 for each x value
+#                                 x		Cooks D for looking at residuals
+#                                 x		VIF(fit) to find highly correlated data
+#                                 x		Combining x values to keep the degrees of freedom reasonable
+#                                 x		Hosmer Lemeshow test
+#                                 x		g=10 is a common rule
+#                                 x		generalhoslem::logitgof(data$y,fitted(fit))
+#                                 x	8	Penalized Firth logistic regression
+#                                 x		logistf::logistf(y~x,data,family=binomial)
+#                                 x		multinomial version of logistic modeling
+#                                 x		VGAM::vglm(y~x1+x2+x3,family=multinomial(refLevel="y1"),data=data)
+#                                 VGAM::vglm(cbind(y1,y2,y3)~x1+x2+x3,family=multinomial(refLevel="y1"),data=data)
+#                                 x		t(coef(fit,matrix=TRUE)) See all the prediction equations
+#                                 x		plotting yhat from predict statement
+#                                 VGAM::vglm(cbind(y1,y2,y3)~x1+x2+x3,family=cumulative(parallel=T),data=data)
+#                                 x		anova(fit,fit2,type="I")
+#                                 x		deviance(fit)
+#                                 x	9	Simulating logistic data
+#                                 x		Sample size calculations

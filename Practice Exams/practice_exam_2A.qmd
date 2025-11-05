@@ -1,0 +1,100 @@
+---
+title: "practice exam 2"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+sens <- 72/(72 + 40); sens
+spec <- 224/(224 + 55); spec
+false_pos <- 55/(55 + 224); false_pos
+false_neg <- 40/(40 + 72); false_neg
+```
+
+2\)
+
+```{r}
+data <- read.table("Biden.txt", header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(y ~ age + gender + z1 + z2 + z3, family = binomial, data = data)
+summary(fit)
+```
+
+3\)
+
+```{r}
+pi <- predict.glm(fit, data.frame(age = 30, gender = 1, z1 = 1, z2 = 1, z3 = 0),
+            type = "response",se.fit = TRUE)
+```
+
+4\)
+
+```{r}
+pi$fit*(1 - pi$fit)*0.009696
+```
+
+```{r}
+pi$fit + c(-1,1) * (1.96 * pi$se.fit)
+```
+
+5\)
+
+```{r}
+1 - exp(-.947637)
+```
+
+7\)
+
+```{r}
+library(lmtest)
+fit_reduced <- glm(y ~ z1 + z2 + z3, family = binomial, data = data)
+lrtest(fit_reduced, fit)
+```
+
+10\)
+
+```{r}
+fit_reduced_2 <- glm(y ~ age + z1 + z2 + z3, family = binomial, data = data)
+lrtest(fit_reduced_2, fit)
+```
+
+11\)
+
+```{r}
+burnout <- read.table("burnout.txt",header = TRUE)
+head(burnout)
+```
+
+```{r}
+fit <- glm(burnout ~ amps, family = binomial, data = burnout)
+summary(fit)
+```
+
+```{r}
+plot(burnout$amps, burnout$burnout)
+amps_seq = seq(0,20,.5)
+probs = predict.glm(fit, data.frame(amps = amps_seq), type = "response")
+lines(amps_seq,probs)
+```
+
+12\)
+
+```{r}
+cremling = read.table("cremling.txt", header = TRUE)
+head(cremling)
+```
+
+```{r}
+fit <- glm(eggs ~ temperature + humidity, family = poisson(), data = cremling)
+summary(fit)
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(temperature = 60, humidity = 40),
+            type = "response")
+```
