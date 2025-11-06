@@ -1,0 +1,88 @@
+---
+title: "Practice Exam 2B"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+P=rep(c("R", "D"), 4)
+PA=rep( c("Y", "Y", "N", "N"), 2)
+GO= c(rep("Y", 4), rep("N", 4))
+Frequency= c(240, 175, 327, 160, 100, 180, 150, 172)
+mydata=data.frame(P, PA, GO, Frequency)
+head(mydata)
+```
+
+```{r}
+fit <- glm(Frequency ~ P + PA + GO + P:PA + P:GO + PA:GO, 
+           family = poisson(), data = mydata)
+summary(fit)
+```
+
+2\)
+
+```{r}
+predict.glm(fit, data.frame(PA = "Y",GO = "Y", P = "R"), type = "response")
+```
+
+3/4)
+
+```{r}
+confint.default(fit)
+```
+
+6\)
+
+```{r}
+reduced_fit <- glm(Frequency ~ P + PA + GO, 
+           family = poisson(), data = mydata)
+summary(reduced_fit)
+test <- lrtest(reduced_fit,fit)
+test
+```
+
+8\)
+
+```{r}
+age=rep(c("Young","Adult", "MiddleAge", "Older"), 2)
+income=c("low", "low", "low", "low", "high", "high", "high", "high")
+SMint.no=c(45, 48, 34, 55, 30, 48, 62, 32)
+SMint.yes=c(15, 20, 22, 28, 2, 2, 10, 8)
+```
+
+```{r}
+fit <- glm(cbind(SMint.yes,SMint.no) ~ age + income,family=binomial)
+summary(fit)
+```
+
+9\)
+
+```{r}
+predict.glm(fit, data.frame(age = "Young",income = "high"),
+            type = "response")
+```
+
+10\)
+
+```{r}
+fit_probit <- glm(cbind(SMint.yes,SMint.no) ~ age + income,
+                  family = binomial(link = "probit"))
+fit_identity <- glm(cbind(SMint.yes,SMint.no) ~ age + income,
+                  family = binomial(link = "identity"))
+```
+
+```{r}
+AIC(fit);BIC(fit)
+AIC(fit_probit);BIC(fit_probit)
+AIC(fit_identity);BIC(fit_identity)
+deviance(fit);deviance(fit_probit);deviance(fit_identity)
+```
+
+12\)
+
+```{r}
+logit <- -.3 + 0.012345*42 + 0.314 + 0.0042*42 + 0.1134*10
+exp(logit)/(1 + exp(logit))
+```

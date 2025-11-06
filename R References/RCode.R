@@ -92,3 +92,4 @@
 #Specificity         = TN/(TN + FP)
 #Rate of change      = B1 p(1 - p)
 #Wald Prediction Interval : pi <- predict.glm(fit, data.frame(age = 30, gender = 1, z1 = 1, z2 = 1, z3 = 0),type = "response",se.fit = TRUE), pi$fit + c(-1,1)*1.96*pi$se.fit
+#To include only effect X:Y
