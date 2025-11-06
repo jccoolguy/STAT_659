@@ -1,0 +1,156 @@
+---
+title: "Practice Exam 2C"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+kidneystone <- read.table("kidneystone.txt", header = TRUE)
+head(kidneystone)
+```
+
+```{r}
+fit <- glm(target ~ ph + osmo + cond + urea + calc, data = kidneystone,
+           family = binomial)
+summary(fit)
+```
+
+2\)
+
+```{r}
+average_values = apply(kidneystone,2, mean)
+head(average_values)
+```
+
+```{r}
+calc_seq <- seq(0,15,.5)
+probs <- predict.glm(fit, newdata = data.frame(ph =
+                                                 average_values["ph"],
+                                               osmo = average_values["osmo"],
+                                               cond = average_values["cond"],
+                                               urea = average_values["urea"],
+                                               calc = calc_seq),
+                     type = "response")
+plot(calc_seq,probs)
+```
+
+3\)
+
+```{r}
+pi <- predict.glm(fit, data.frame(ph = 5, osmo = 300, cond = 10,
+                                  urea = 100, calc = 3),
+                  se.fit = TRUE)
+pi
+```
+
+```{r}
+int <- pi$fit + c(-1,1)*1.96*pi$se.fit
+exp(int)/(1 + exp(int))
+```
+
+4\)
+
+```{r}
+.5*(1 - .5)*-0.009443
+```
+
+```{r}
+library(mfx)
+mfx::logitmfx(fit,atmean=FALSE,data= kidneystone)
+```
+
+```{r}
+pi <- predict.glm(fit,type = "response")
+1/length(pi) * sum(pi*(1 - pi))* -0.009443
+```
+
+5\)
+
+```{r}
+preds <- predict.glm(fit, type = "response") > .5
+table(kidneystone$target,preds)
+```
+
+6\)
+
+```{r}
+library(pROC)
+pROC::roc(kidneystone$target~predict.glm(fit,type="response"),plot=TRUE)
+```
+
+8\)
+
+```{r}
+smoking <- read.table("smoking.txt",header = TRUE)
+head(smoking)
+```
+
+```{r}
+fit <- glm(dead ~ smoke + age + offset(log(pop)),data = smoking,
+           family = poisson())
+summary(fit)
+```
+
+```{r}
+predict.glm(fit, data.frame(age = "80+", smoke = "cigarretteOnly",
+                            pop = 1000), type = "response")
+```
+
+9\)
+
+```{r}
+fit_reduced <- glm(dead ~ age + offset(log(pop)),data = smoking,
+           family = poisson())
+summary(fit_reduced)
+```
+
+```{r}
+deviance(fit_reduced) - deviance(fit)
+```
+
+```{r}
+which.max(cooks.distance(fit))
+```
+
+11\)
+
+```{r}
+cars <- read.delim("cars.txt", sep = "-", header = TRUE)
+head(cars)
+```
+
+```{r}
+fit_poisson <- glm(cars ~ weather + cops + university + time,
+                   family = poisson(), data = cars)
+BIC(fit_poisson)
+```
+
+```{r}
+library(MASS)
+fit_nb <- glm.nb(cars ~ time +  I(time^2), data = cars)
+BIC(fit_nb)
+```
+
+```{r}
+library(pscl)
+fit_zi <- pscl::zeroinfl(cars ~ weather + cops*time
+                         |weather + time + I(time^2),
+                         data=cars,dist=c("poisson"))
+BIC(fit_zi)
+```
+
+12\)
+
+```{r}
+theatercandy <- read.table("theatercandy.txt", header = TRUE)
+head(theatercandy)
+```
+
+```{r}
+fit <- glm(candy ~ movie + outside + price + offset(log(hours)),
+           data = theatercandy,family = poisson())
+summary(fit)
+```
