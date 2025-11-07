@@ -1,0 +1,121 @@
+---
+title: "Exam 2 Fall 24"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
+
+1\)
+
+```{r}
+gym <- read.table("gym.txt", header = TRUE)
+head(gym)
+```
+
+```{r}
+library(pscl)
+fit <- pscl::zeroinfl(gym ~ gender + age + weight + credit|
+                        gender + age + weight + credit ,
+                      data = gym,dist=c("poisson"))
+summary(fit)
+```
+
+2\)
+
+```{r}
+fit_reduced <- pscl::zeroinfl(gym ~ gender + credit|
+                       weight,
+                      data = gym,dist=c("poisson"))
+summary(fit_reduced)
+```
+
+```{r}
+BIC(fit); BIC(fit_reduced)
+```
+
+3\)
+
+```{r}
+cows <- read.table("cows.txt", header = TRUE)
+head(cows)
+```
+
+```{r}
+fit <- glm(died ~ temperature + I(temperature^2), data = cows,
+           family = binomial)
+summary(fit)
+```
+
+```{r}
+library(lmtest)
+fit_reduced <- glm(died ~ temperature, data = cows, family = binomial)
+lrtest(fit_reduced,fit)
+```
+
+4\)
+
+```{r}
+temperature = seq(-30, 130, .5)
+probs = predict.glm(fit, data.frame(temperature = temperature),
+                    type = "response")
+plot(temperature, probs)
+```
+
+5\)
+
+```{r}
+library(pROC)
+pROC::roc(cows$died ~predict.glm(fit,type="response"),plot=TRUE)
+```
+
+7\)
+
+```{r}
+probs <- predict.glm(fit, type = "response")
+died_predicts <- ifelse(probs > .25, 1, 0)
+table(cows$died, died_predicts)
+```
+
+8\)
+
+```{r}
+806/(806 + 267)
+```
+
+9\)
+
+```{r}
+studentsurvey <- read.table("studentsurvey.txt", header = TRUE)
+head(studentsurvey)
+```
+
+```{r}
+fit <- glm(count ~ tattoo + pineapple + morning, data = studentsurvey,
+           family = poisson())
+summary(fit)
+```
+
+10\)
+
+```{r}
+library(MASS)
+fit_nb <- MASS::glm.nb(count ~ tattoo + pineapple + morning,data = studentsurvey)
+summary(fit_nb)
+```
+
+11\)
+
+```{r}
+predict.glm(fit_nb, data.frame(tattoo = "yes",
+                               pineapple = "no",
+                               morning  = "yes"), type = "response")
+```
+
+12\)
+
+```{r}
+coef <- coef(fit_nb)[2]
+se <- 0.124249
+crit_value <- qnorm(1 - .05)
+coef + c(-1,1)*crit_value*se
+```
