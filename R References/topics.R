@@ -1,3 +1,5 @@
+###TOPICS
+
 # done	HW	Topic
 # x	1	Response vs explanatory
 # x		Nominal vs ordinal
@@ -175,3 +177,106 @@
 #                                 x		deviance(fit)
 #                                 x	9	Simulating logistic data
 #                                 x		Sample size calculations
+#Log-Linear e^B0 percent change
+#summary(fit)$theta
+#summary(fit)$SE.theta
+
+# R CODE
+
+
+# Method	Code
+# test p wald	by hand (phat-p)/sqrt(phat*(1-phat)/n)
+# test p Score	prop.test(x,n,alternative="two.sided",correct=FALSE)
+# test p fishers	binom.test(x,n,alternative="two.sided",correct=FALSE)
+# CI p Wald	binom::binom.confint(x,n,method="asymptotic")
+# CI p Score	binom::binom.confint(x,n,method="wilson")
+# CI p AC	binom::binom.confint(x,n,method="agresti-coull")
+# CI p Fishers	binom::binom.confint(x,n,method="exact")
+# CI p Jeffrey	binom::binom.confint(x,n,method="bayes")
+# Midp CI	exactci::binom.exact(x,n,p, alternative = "less", midp = TRUE)
+# CI poisson Wald	by hand ybar +- Z sqrt(Ybar/n)
+# CI poisson Score	by hand  ybar+Z^2/2n+Z/sqrt(n) sqrt(ybar+Z^2/4n)
+# CI poisson GOF	by hand Z={(s^2/xbar)-1}sqrt((n-1)/2)
+# Relative Risk	by hand p1/p2
+# RR CI	eiptools::riskratio.wald(datamatrix)
+# Odds Ratio wald CI	epitools::oddsratio(data,method="wald")$measure
+# Test p1-p2 exact	epitools::oddsratio(data,method="fisher")$p.value
+# Odds Ratio Mid p	epitools::oddsratio(data)
+# Test odds ratio=1	epitools::oddsratio(data)
+# CI Odds Ratio	epitools::oddsratio(data)
+# CI p1-p2 Wald	DescTools::BinomDiffCI(x1,n1,x2,n2,method="wald")
+# CI p1-p2 Score	DescTools::BinomDiffCI(x1,n1,x2,n2,method="score")
+# CI p1-p2 Newcomb	By hand
+# CI p1-p2 AgrestiCaffo	DescTools::BinomDiffCI(x1,n1,x2,n2,method="ac")
+# Breslow Day	DescTools::BreslowDayTest(data)
+# Mantel Heanszel	mantelhaen.test(data,correct=FALSE)
+# X2 GOF	chisq.test(data,p=prop)
+# X2 Test indpendence	chisq.test(data)
+# Logistic 0/1	glm(y~x,family=binomial)
+# Logistic columns	glm(cbind(y1,y2)~x,family=binomial)
+# Logistic counts	glm(y/n~x,weights=n,family=binomial)
+# Logistic Linear	fit<-glm(y~x,family=binomial(link="identity"))
+# Plot effects	plot(yhat~xhat,type="l")
+# Logistic prediction	predict(fit,newdata=data.frame(x=10),type="response")
+# Logistic predictions	predict(fit,newdata=data,type="response")
+# Logistic confusion table	table(data$y,preds)
+# LR test nested	anova(fit1,fit2)
+# LR test nested pvalue	lmtest::lrtest(fit1,fit2)
+# LT test	by hand Chisquare(residual1-residual2,df1-df2)
+# CI for beta Wald	confint.default(fit)
+# CI for beta L Profile	confint(fit)
+# Probit 0/1	glm(y~x,family=binomial(link="probit"))
+# Poisson counts	glm(y~x,data=data,family=poisson)
+# Poisson by amount	glm(y~x+offset(log(n)),data=data,family=poisson)
+# Poisson by amount	glm(y~x,offset=log(n),data=data,family=poisson)
+# Log-Linear	glm(y~x,data=data,family=poisson)
+# Negative Binomial	MASS::glm.nb(y~x,data=data)
+# NB by amount	MASS::glm.nb(y~x+offset(log(n)),data=data)
+# Zero-Inflated	pscl::zeroinfl(y~xpoisson|xzero,data=data)
+# Zero-Inflated NB	pscl::zeroinfl(y~xpoisson|xzero,data=data,dist="negbin")
+# AIC	AIC(fit)
+# BIC	BIC(fit)
+# ROC curve	pROC::roc(data$Y~predict.glm(fit,type="response"),plot=TRUE)
+# AUC	pROC::roc(data$Y~predict.glm(fit,type="response"))$auc
+# Logistic Marginal Effect	mfx::logitmfx(fit,atmean=FALSE,data=data.frame(x,y))
+# Logistic confusion table	table(data$y,as.numeric(fitted(fit)>0.642))
+# Cooks Distance	cooks.distance(fit)
+# General Hoslem	generalhoslem::logitgof(data$y,fitted(fit),g=10)
+# Firth Penalized Logistic	logistf::logistf(y~x,family=binomial)
+# Multinomial columns	vglm(cbind(y1,y2,y3)~x,family=multinomial(refLevel="y1"),data=data)
+# Mulitnomial single var	vglm(y~x,family=multinomial(refLevel="y1"),data=data)
+# Multinomial counts	vglm(y~x,weight=n,family=multinomial(refLevel="y1"),data=data)
+# Sort multi pred eqns	t(coef(fit,matrix=TRUE))
+# SimLog create x	x<-runif(n,0,10)
+# SimLog create model	model<-B0+B1*x
+# SimLog create probs	probs<-exp(model)/(1+exp(model))
+# SimLog create y	y<-rbinom(n,1,probs)
+# SimLog test p	summary(fit)$coefficients[-1]<0.05
+# SimLog for loop	for(loop in 1:10000){
+#   LDA analysis	MASS:lda(y~x1+x2,data=data)
+#   LDA predictions	predict(fit,newdata=data.frame(x=10),type="response")
+#   LDA pred table	table(data$y,predict(fit,type="response")$class)
+#   LDA graph prin comp	plot(fit,dimen=2,col=as.numeric(factor(data$y)))
+#   Num Clusters elbow	factoextra::fviz_nbclust(sdata,kmeans,method="wss")
+#   Cluster Analysis	kmeans(sdata,3,nstart=25)
+#   Graph Clusters	factoextra::fviz_cluster(fit,sdata)
+#   Decision Tree	tidymodels::fit(decision_tree(mode="classification"),y~x,data=data)
+#   Plot decision tree	rpart.plot::rpart.plot(fit$fit,type=4)
+#   Decision tree conf table	table(data$buy,predict(fit,new_data=data)[[1]])
+#   VIP	vip::vip(fit)
+#   Prediction	predict(fit,new_data=data.frame(x1=9))
+#   XGBoost RF binary	xgboost::xgboost(data=covariates,label=y,nrounds=4,objective="binary:logistic")
+#   XGB RF multinomial	xgboost::xgboost(data=covariates,label=y,nround=3,objective="multi:softmax",num_class=4)
+#   XGRF VIP	vip::vip(fit)
+#   XGRF VIP	DiagrammeR::xgb.plot.importance(xgb.importance(names(y), model = fit))
+#   XGRF prediction	predict(fit,as.matrix(data.frame(x1=2,x2=3))
+#                           XGRF confusion	table(numy,predict(model,newdata=covariates))
+#  Turn of scientific notation	sigs<-0
+#False Positive rate = FP/(FP + TN)
+#False negative rate = FN/(FN + TP)
+#Sensitivity         = TP/(TP + FN)
+#Specificity         = TN/(TN + FP)
+#Rate of change      = B1 p(1 - p)
+#Wald Prediction Interval : pi <- predict.glm(fit, data.frame(age = 30, gender = 1, z1 = 1, z2 = 1, z3 = 0),type = "response",se.fit = TRUE), pi$fit + c(-1,1)*1.96*pi$se.fit
+#To include only effect X:Y
+#pi = e^(b0+b1x...)/( 1 + e^(b0+b1x ...))
