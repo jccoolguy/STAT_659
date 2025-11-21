@@ -1,0 +1,9 @@
+lake  size  fish  invertibrate  reptile  bird  other 
+Hancock      1   23   4   2   2   8 
+Hancock      0    7   0   1   3   5            
+Oklawaha      1    5  11   1   0   3     
+Oklawaha      0   13   8   6   1   0   
+Trafford      1    5  11   2   1   5 
+Trafford      0    8   7   6   3   5 
+George      1   16  19   1   2   3 
+George      0    17  1   0   1   3 

@@ -1,0 +1,98 @@
+---
+title: "STAT 659 HW 8"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1/2)
+
+```{r}
+y <- c(0, 0, 0, 0, 1, 1, 1, 1)
+x <- c(0, 10, 20, 30, 70, 80, 90, 100)
+fit <- glm(y ~ x, family = binomial())
+summary(fit)
+```
+
+3/4)
+
+```{r}
+y <- c(0, 0, 0, 0, 1, 1, 1, 1, 1, 0)
+x <- c(0, 10, 20, 30, 70, 80, 90, 100, 50, 50)
+fit <- glm(y ~ x, family = binomial())
+summary(fit)
+```
+
+5\)
+
+```{r}
+y <- c(0, 0, 0, 0, 1, 1, 1, 1, 1, 0)
+x <- c(0, 10, 20, 30, 70, 80, 90, 100, 49.9, 50.1)
+fit <- glm(y ~ x, family = binomial())
+summary(fit)
+```
+
+7\)
+
+```{r}
+library(logistf)
+y <- c(0, 0, 0, 0, 1, 1, 1, 1)
+x <- c(0, 10, 20, 30, 70, 80, 90, 100)
+fit <- logistf(y ~ x, family = binomial())
+summary(fit)
+```
+
+9\)
+
+```{r}
+table5.8 <- data.frame(
+LI = c(rep("high",4),rep("low",4)),
+sex = c(rep("female",2),rep("male",2),rep("female",2),rep("male",2)),
+OP = c("n","y","n","y","n","y","n","y"),
+yes = c(3,2,4,1,5,3,5,6),
+no = c(0,0,0,0,0,2,4,11),
+total =c(3,2,4,1,5,3,5,6)+ c(0,0,0,0,0,2,4,11))
+head(table5.8)
+```
+
+```{r}
+library(lmtest)
+fit <- glm(cbind(yes,no) ~ factor(LI), data = table5.8, family = binomial)
+summary(fit)
+lrtest(fit,1)
+```
+
+```{r}
+fit <- glm(cbind(yes,no) ~ factor(sex), data = table5.8, family = binomial)
+summary(fit)
+lrtest(fit,1)
+```
+
+```{r}
+fit <- glm(cbind(yes,no) ~ factor(OP), data = table5.8, family = binomial)
+summary(fit)
+lrtest(fit,1)
+```
+
+10\)
+
+```{r}
+fit <- glm(cbind(yes,no) ~ factor(LI) + factor(sex) + factor(OP), data = table5.8, family = binomial)
+summary(fit)
+```
+
+12\)
+
+```{r}
+#adjusting data format
+library(tidyverse)
+df_long <- table5.8 |> 
+  mutate(
+    yes_label = "yes",
+    no_label  = "no"
+  ) |> 
+  pivot_longer(cols = c(yes,no), names_to = "response", values_to = "count") |> 
+  uncount(weights = count) |> 
+  mutate(response = ifelse(response == "yes",1,0))
+head(df_long)
+```
