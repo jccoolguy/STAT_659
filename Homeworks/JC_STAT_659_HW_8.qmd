@@ -81,6 +81,12 @@ fit <- glm(cbind(yes,no) ~ factor(LI) + factor(sex) + factor(OP), data = table5.
 summary(fit)
 ```
 
+```{r}
+fit <- logistf(yes/total ~ factor(LI) + factor(sex) + factor(OP), data = table5.8,
+               family = binomial, weights = total)
+summary(fit)
+```
+
 12\)
 
 ```{r}
@@ -95,4 +101,62 @@ df_long <- table5.8 |>
   uncount(weights = count) |> 
   mutate(response = ifelse(response == "yes",1,0))
 head(df_long)
+```
+
+```{r}
+fit <- logistf(response ~ factor(LI) + factor(sex) + factor(OP), data = df_long,
+               family = binomial)
+summary(fit)
+```
+
+13\)
+
+```{r}
+Alligators <- read.table("Alligators.txt",header = TRUE)
+head(Alligators)
+```
+
+```{r}
+library(VGAM)
+fit <- vglm(cbind(fish,invertibrate, reptile, bird, other) ~ lake + size, 
+    family = multinomial(refLevel = "fish"), data = Alligators)
+summary(fit)
+```
+
+14\)
+
+```{r}
+counts <- c(6,43,75,6,113,178,6,57,117)
+happiness <- rep(c("not","pretty","very"),3)
+incomec <- rep(c("below","average","above"), each = 3)
+income <- as.numeric(factor(incomec))
+income[incomec == "below"] <- 1
+income[incomec == "average"] <- 2
+income[incomec == "above"] <- 3
+data <- data.frame(counts, happiness, income)
+head(data)
+```
+
+```{r}
+fit <- vglm(happiness ~ income, weight = counts, 
+            family = multinomial(refLevel = "very"), data = data)
+summary(fit)
+```
+
+```{r}
+lrtest(fit, 1)
+```
+
+18\)
+
+```{r}
+fit <- vglm(happiness ~ income, weight = counts, 
+            family = cumulative(parallel = TRUE), data = data)
+summary(fit)
+```
+
+19\)
+
+```{r}
+lrtest(fit,1)
 ```
