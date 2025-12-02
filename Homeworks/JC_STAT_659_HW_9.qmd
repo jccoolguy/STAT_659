@@ -1,0 +1,119 @@
+---
+title: "STAT 659 HW 9"
+author: "Jack Cunningham"
+format: pdf
+editor: visual
+---
+
+1\)
+
+```{r}
+log(.5/(1 - .5))
+```
+
+2\)
+
+```{r}
+p1 <- NULL
+for(i in 1:10000){
+  n <- 170
+  x <- runif(n, 0, 10)
+  model <- 2 - .2*x
+  prob <- exp(model)/(1 + exp(model))
+  y <- rbinom(n, 1, prob)
+  fit <- glm(y ~ x, family = binomial)
+  p1 <- c(p1,summary(fit)$coefficients[2,4])
+}
+mean(p1 < .05)
+```
+
+3/4)
+
+```{r}
+avg_dog_logit <- log(.5/(1 - .5))
+one_sd_dog_logit <- log(.8/(1 - .8))
+beta_1 <- (one_sd_dog_logit - avg_dog_logit)/2
+beta_0 <- avg_dog_logit - beta_1*10
+```
+
+5\)
+
+```{r}
+p1 <- NULL
+for(i in 1:10000){
+  n <- 37
+  x <- rnorm(n, 10, 2)
+  model <- beta_0 + beta_1*x
+  prob <- exp(model)/(1 + exp(model))
+  y <- rbinom(n, 1, prob)
+  fit <- glm(y ~ x, family = binomial)
+  p1 <- c(p1,summary(fit)$coefficients[2,4])
+}
+mean(p1 < .05)
+```
+
+6\)
+
+```{r}
+niter <- 1000
+p <- matrix(NA, nrow = niter, ncol = 4)
+for(i in 1:niter){
+  for(j in 1:4){
+      n <- 120
+      x <- runif(n, 0, 100)
+      model <- -5 + .1*x
+      prob <- exp(model)/(1 + exp(model))
+      y <- rbinom(n, 1, prob)
+      fit <- glm(y ~ x, family = binomial)
+      p[i,j] <- summary(fit)$coefficients[2,4]
+    }
+}
+mean(p[,1] < .05 & p[,2] < .05 & p[,3] < .05 & p[,4] < .05)
+```
+
+7\)
+
+```{r}
+data <- read.table("fugitives.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+library(MASS)
+fit <- lda(tactic ~ finances + intelligence + violence + age, data = data)
+fit
+```
+
+```{r}
+plot(fit,dimen = 2, col = as.numeric(factor(data$tactic)))
+```
+
+9\)
+
+```{r}
+table(data$tactic, predict(fit, type = "response")$class)
+```
+
+10\)
+
+```{r}
+data <- read.table("doctor.txt", header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- lda(Diagnosis ~ fever + sweat + bp + tongue + energy + pain, data = data)
+fit
+```
+
+11\)
+
+```{r}
+table(data$Diagnosis, predict(fit, type = "response")$class)
+```
+
+13\)
+
+```{r, fig.height=8, fig.width=12}
+plot(fit, dimen = 1)
+```
