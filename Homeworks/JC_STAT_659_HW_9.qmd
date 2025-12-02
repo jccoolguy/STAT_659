@@ -117,3 +117,57 @@ table(data$Diagnosis, predict(fit, type = "response")$class)
 ```{r, fig.height=8, fig.width=12}
 plot(fit, dimen = 1)
 ```
+
+14\)
+
+```{r}
+data <- read.table("ceos.txt", header = TRUE)
+head(data)
+```
+
+```{r}
+sdata <- scale(data)
+set.seed(659)
+library(factoextra)
+fviz_nbclust(sdata, kmeans, method = "wss")
+```
+
+```{r}
+set.seed(659)
+fit <- kmeans(sdata, 3, nstart = 25)
+fit$centers
+fviz_cluster(fit, sdata)
+```
+
+18\)
+
+```{r}
+data <- read.table("faces.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+set.seed(659)
+sdata <- scale(data)
+fit <- kmeans(sdata, 4, nstart = 25)
+fit$centers
+fviz_cluster(fit, sdata)
+```
+
+19\)
+
+```{r}
+data <- read.table("buywidget.txt", header = TRUE)
+data$buy <- factor(data$buy)
+```
+
+```{r, fig.width = 12, fig.height = 12}
+library(tidymodels)
+fit <- fit(decision_tree(mode = "classification"), buy ~ income + education + age, data = data)
+library(rpart.plot)
+rpart.plot(fit$fit, type = 2)
+```
+
+```{r}
+table(data$buy, predict(fit,new_data = data)$.pred_class)
+```
