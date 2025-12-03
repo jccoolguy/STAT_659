@@ -171,3 +171,67 @@ rpart.plot(fit$fit, type = 2)
 ```{r}
 table(data$buy, predict(fit,new_data = data)$.pred_class)
 ```
+
+21\)
+
+```{r}
+set.seed(659)
+library(xgboost)
+cov <- as.matrix(data[,-1])
+y <- as.numeric(as.factor(data[,1])) -1
+fit <- xgboost(data = cov, label = y, nround = 4, objective = "binary:logistic")
+```
+
+```{r}
+library(DiagrammeR)
+xgb.plot.importance(xgb.importance(names(y), model = fit))
+```
+
+```{r}
+table(data[,1],ifelse(predict(fit, newdata = cov) > .5, "not","buy"))
+```
+
+24\)
+
+```{r}
+data <- read.table("emails.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+cov <- data[,-1]
+cov$links <- ifelse(cov$flags == "links",1,0)
+cov$foreign <- ifelse(cov$flags == "foreign", 1, 0)
+cov$urgency <- ifelse(cov$flags == "urgency",1, 0)
+cov$isolation <- ifelse(cov$flags == "isolation", 1, 0)
+cov <- as.matrix(cov[,-4])
+y <- as.numeric(as.factor(data[, 1])) - 1
+```
+
+```{r}
+set.seed(659)
+fit <- xgboost(data = cov, label = y, objective = "multi:softmax",
+               num_class = 4, nround = 3)
+```
+
+```{r}
+xgb.plot.importance(xgb.importance(names(y), model = fit))
+```
+
+```{r}
+table(data[,1],predict(fit, newdata = cov))
+```
+
+```{r}
+predict(fit, newdata = as.matrix(data.frame(hour = 0, length = 13,
+                                               mispelings = 2, links = 0,
+                                               foreign = 0, urgency = 1,
+                                               isolation = 0)))
+```
+
+```{r}
+predict(fit, newdata = as.matrix(data.frame(hour = 8, length = 13,
+                                               mispelings = 2, links = 0,
+                                               foreign = 0, urgency = 1,
+                                               isolation = 0)))
+```
