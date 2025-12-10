@@ -9,7 +9,7 @@
 # CI p Jeffrey	binom::binom.confint(x,n,method="bayes")
 # Midp CI	exactci::binom.exact(x,n,p, alternative = "less", midp = TRUE)
 # CI poisson Wald	by hand ybar +- Z sqrt(Ybar/n)
-# CI poisson Score	by hand  ybar+Z^2/2n+Z/sqrt(n) sqrt(ybar+Z^2/4n)
+# CI poisson Score	by hand  ybar + z^2/(2*n) + c(-1,1)*z*sqrt(ybar/n + z^2/(4*n^2))
 # CI poisson GOF	by hand Z={(s^2/xbar)-1}sqrt((n-1)/2)
 # Relative Risk	by hand p1/p2
 # RR CI	eiptools::riskratio.wald(datamatrix)

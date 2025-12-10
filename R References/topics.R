@@ -280,3 +280,49 @@
 #Wald Prediction Interval : pi <- predict.glm(fit, data.frame(age = 30, gender = 1, z1 = 1, z2 = 1, z3 = 0),type = "response",se.fit = TRUE), pi$fit + c(-1,1)*1.96*pi$se.fit
 #To include only effect X:Y
 #pi = e^(b0+b1x...)/( 1 + e^(b0+b1x ...))
+
+#Power Calc
+# p1 <- NULL
+# for(i in 1:10000){
+#   n <- 170
+#   x <- runif(n, 0, 10)
+#   model <- 2 - .2*x
+#   prob <- exp(model)/(1 + exp(model))
+#   y <- rbinom(n, 1, prob)
+#   fit <- glm(y ~ x, family = binomial)
+#   p1 <- c(p1,summary(fit)$coefficients[2,4])
+# }
+# mean(p1 < .05)
+
+# Power Calc for multiple variables
+
+# niter <- 5000
+# p <- matrix(NA,nrow = niter, ncol = 3)
+# for(i in 1:niter){
+#   n <- 170
+#   x1 <- runif(n, 0, 1)
+#   x2 <- runif(n, 0, 1)
+#   x3 <- runif(n, 0, 1)
+#   model1 <- 1 - 2*x1
+#   model2 <- -3 + 8*x2
+#   model3 <- -4 + 4*x3
+#   prob1 <- exp(model1)/(1 + exp(model1))
+#   prob2 <- exp(model2)/(1 + exp(model2))
+#   prob3 <- exp(model3)/(1 + exp(model3))
+#   prob_avg <- (prob1 + prob2 + prob3)/3
+#   y <- rbinom(n,1,prob_avg)
+#   fit <- glm(y ~ x1 + x2 + x3, family = binomial)
+#   p[i,1] <- summary(fit)$coefficients[2,4]
+#   p[i,2] <- summary(fit)$coefficients[3,4]
+#   p[i,3] <- summary(fit)$coefficients[4,4]
+# }
+# mean(p[,1] < .05|p[,2] < .05|p[,3] < .05)
+
+#XGB setup
+# cov <- data[,-1]
+# cov$links <- ifelse(cov$flags == "links",1,0)
+# cov$foreign <- ifelse(cov$flags == "foreign", 1, 0)
+# cov$urgency <- ifelse(cov$flags == "urgency",1, 0)
+# cov$isolation <- ifelse(cov$flags == "isolation", 1, 0)
+# cov <- as.matrix(cov[,-4])
+# y <- as.numeric(as.factor(data[, 1])) - 1

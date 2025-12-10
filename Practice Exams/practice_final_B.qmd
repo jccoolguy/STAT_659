@@ -1,0 +1,272 @@
+---
+title: "JC 638 Practice Final B"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+n <- 37
+x <- 11
+library(binom)
+binom::binom.confint(x,n,method="asymptotic")
+binom::binom.confint(x,n,method="wilson")
+```
+
+2\)
+
+```{r}
+n <- 140
+ybar <- 192
+z <- qnorm(.975)
+
+#Wald
+ybar + c(-1,1)*z*sqrt(ybar/n)
+
+#Score
+ybar + z^2/(2*n) + c(-1,1)* z*(sqrt(n)) * sqrt(ybar + z^2/4*n) 
+
+ybar + z^2/(2*n) + c(-1,1)*z*sqrt(ybar/n + z^2/(4*n^2))
+```
+
+3\)
+
+```{r}
+library(epitools)
+data <- matrix(c(52,63,14,19), nrow = 2, ncol = 2)
+
+epitools::oddsratio(data,method="wald")$measure
+```
+
+4\)
+
+```{r}
+data <- matrix(c(22, 38, 15, 26, 34, 11, 15, 35, 19),
+               nrow = 3, ncol = 3)
+chisq.test(data)
+```
+
+5\)
+
+```{r}
+data <- matrix(c(42,23,30,35), nrow = 2, ncol = 2)
+
+#Wald
+epitools::oddsratio(data,method="wald")
+
+#Fisher
+epitools::oddsratio(data,method="fisher")$p.value
+
+Z = (log(42*35/(30*23)) - log(1))/sqrt(1/42 + 1/23 + 1/30 + 1/35)
+p = 2*(1 - pnorm(abs(Z)))
+p
+```
+
+6\)
+
+```{r}
+data <- read.table("collider.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+library(VGAM)
+fit <- vglm(particle ~ angle + spin + speed + temp,
+            family=multinomial(refLevel="gluon"),data=data)
+summary(fit)
+```
+
+6\)
+
+```{r}
+BIC(fit)
+```
+
+7\)
+
+```{r}
+temp_seq <- seq(-10,110,.5)
+predictions <- predict(fit, newdata = data.frame(angle = 0, speed = 50,
+                                            spin = "up", temp = temp_seq),
+                       type = "response")
+```
+
+```{r}
+plot(temp_seq, predictions[,"boson"], col = "red", ylim = c(0,1), type = "l")
+lines(temp_seq, predictions[,"gluon"], col = "blue")
+lines(temp_seq, predictions[,"hadron"], col = "green")
+lines(temp_seq, predictions[,"fermion"], col = "orange")
+```
+
+```{r}
+t(coef(fit,matrix=TRUE))
+```
+
+8\)
+
+```{r}
+model <- -14 + .03*22 + 4.2*3.5
+exp(model)/(1 + exp(model))
+```
+
+9\)
+
+```{r}
+data <- read.table("lobbyists.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(y ~ x1 + x2, data = data, family = binomial)
+summary(fit)
+```
+
+```{r}
+confint.default(fit)
+```
+
+10\)
+
+```{r}
+preds <- predict.glm(fit, newdata = data.frame(x1 = 10, x2 = seq(0,20,.2)),
+                     type = "response")
+plot(seq(0,20,.2),preds, ylim = c(0,1), type = "l")
+```
+
+11\)
+
+```{r}
+library(pROC)
+pROC::roc(data$y~predict.glm(fit,type="response"),plot=TRUE)
+```
+
+12\)
+
+```{r}
+data <- read.table("AIdriver.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(alert ~ light + action, data = data, family = binomial)
+summary(fit)
+```
+
+```{r}
+library(logistf)
+fit_firth <- logistf(alert ~ light + action, data = data, family = binomial)
+summary(fit_firth)
+```
+
+14\)
+
+```{r}
+data <- read.table("years.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+set.seed(659)
+sdata = scale(data)
+fit <- kmeans(sdata,4,nstart=25)
+fit
+```
+
+```{r}
+library(factoextra)
+factoextra::fviz_cluster(fit,sdata)
+```
+
+15\)
+
+```{r}
+data <- read.table("pitches.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+cov <- as.matrix(data[,-1])
+y <- as.numeric(as.factor(data[, 1])) - 1
+```
+
+```{r}
+set.seed(659)
+fit <- xgboost::xgboost(data=cov,label=y,nround=4,objective="multi:softmax",num_class=3)
+```
+
+```{r}
+predict(fit,as.matrix(data.frame(speed = 110 , curve = 20, angle = 5)))
+```
+
+16\)
+
+```{r}
+data <- read.table("wells.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+library(MASS)
+fit <- lda(drill ~ carbon + oxygen + phosphorus + nitrogen + silicon,data=data)
+plot(fit,dimen=2,col=as.numeric(factor(data$drill)),xlim = c(-2,4))
+```
+
+17\)
+
+```{r}
+beta_1 <- 1/10 * (log(.75/(1 - .75)) - log(.5/(1-.5)))
+beta_1;
+beta_2 <- 10*beta_1 + log(.6/(1 - .6)) - log(.5/(1 - .5));
+beta_2
+beta_0 = -beta_1*20 - beta_2 + log(.6/(1 - .6))
+beta_0
+```
+
+18\)
+
+```{r,warning=FALSE}
+ niter <- 5000
+ p <- matrix(NA,nrow = niter, ncol = 2)
+ for(i in 1:niter){
+   n <- 200
+   age <- runif(n, 20, 60)
+   gender <- rbinom(n, 1 , .5)
+   model <- beta_0 + beta_1*age + beta_2*gender
+   prob <- exp(model)/(1 + exp(model))
+   y <- rbinom(n,1,prob)
+   fit <- glm(y ~ age + gender, family = binomial)
+   p[i,1] <- summary(fit)$coefficients[2,4]
+   p[i,2] <- summary(fit)$coefficients[3,4]
+ }
+ mean(p[,1] < .05 & p [,2] < .05)
+```
+
+19\)
+
+```{r}
+data <- array(data = c(14,8,60,50,
+                       25,34,60,72,
+                       18,15,22,25), dim = c(2,2,3))
+data
+```
+
+```{r}
+mantelhaen.test(data,correct=FALSE)
+```
+
+```{r}
+data <- read.table("lobbyists.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+library(mfx)
+fit <- glm(y ~ x1 + x2, family = binomial, data = data)
+#logitmfx(x2,atmean=FALSE,data=data)
+```
+
+```{r}
+logitmfx(fit,atmean=FALSE,data=data )
+```
