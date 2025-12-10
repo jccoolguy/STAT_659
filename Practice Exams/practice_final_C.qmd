@@ -1,0 +1,324 @@
+---
+title: "JC STAT 659 Practice Final C"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+library(binom)
+n <- 40
+x <- 20
+tests <- binom::binom.confint(x,n)[c(1,2,3),c("method","lower","upper")]
+tests$length <- tests$upper - tests$lower
+tests
+```
+
+2\)
+
+```{r}
+data <- read.table("packages.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+cov <- data[,-1]
+cov$brown <- ifelse(cov$color == "brown",1,0)
+cov$other <- ifelse(cov$color == "other",1,0)
+cov$red <- ifelse(cov$color == "red",1,0)
+cov$white <- ifelse(cov$color == "white",1,0)
+cov <- as.matrix(cov[,-3])
+head(cov)
+```
+
+```{r}
+y <- as.numeric(as.factor(data[, 1])) - 1
+# dangerous junk money valuable
+```
+
+```{r}
+library(xgboost)
+fit <- xgboost::xgboost(data=cov,label=y,nround=3,objective="multi:softmax",num_class=4)
+
+```
+
+```{r}
+table(y,predict(fit,newdata=cov))
+```
+
+3\)
+
+```{r}
+library(vip)
+vip::vip(fit)
+```
+
+4\)
+
+```{r}
+data <- matrix(c(31,15,26,12), nrow = 2, ncol = 2);data
+x1 <- 31
+n1 <- 46
+x2 <- 26
+n2 <- 38
+```
+
+```{r}
+library(DescTools)
+DescTools::BinomDiffCI(x1,n1,x2,n2,method="score",conf.level = .8)
+DescTools::BinomDiffCI(x1,n1,x2,n2,method="ac",conf.level = .8)
+```
+
+5\)
+
+```{r}
+data <- read.table("stormtrees.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(falls ~ type + age + height + density,
+           data = data, family = binomial)
+summary(fit)
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(age = 40, type = "Oak", height = 30,
+                                      density = 20), type = "response")
+```
+
+6\)
+
+```{r}
+BIC(fit)
+```
+
+```{r}
+model_2 <- glm(falls ~ type + age + height + density + I(age^2),
+           data = data, family = binomial)
+model_3 <- glm(falls ~ type + age + height + density + I(height^2),
+           data = data, family = binomial)
+model_4 <- glm(falls ~ type + age + height + density + height:type,
+           data = data, family = binomial)
+model_5 <- glm(falls ~ type + age + height + density + height:type + I(age^2),
+           data = data, family = binomial)
+model_6 <- glm(falls ~ type + age + height + density + height:type + I(height^2),
+           data = data, family = binomial)
+```
+
+```{r}
+BIC(fit)
+BIC(model_2)
+BIC(model_3)
+BIC(model_4)
+BIC(model_5)
+BIC(model_6)
+```
+
+7\)
+
+```{r}
+library(pROC)
+pROC::roc(data$falls~predict.glm(model_5,type="response"))$auc
+```
+
+8\)
+
+```{r}
+props <- c(.612,0.083, .099, .179, .027)
+sum(props)
+data <- c(615,100,113,210,37)
+props;data
+```
+
+```{r}
+chisq.test(data,p=props)
+```
+
+9\)
+
+```{r}
+data <- read.table("brainscans.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(neurons ~ activity + heartrate + age + caffeine 
+           + sleep + offset(log(seconds)), data = data, family = poisson)
+summary(fit)
+```
+
+10\)
+
+```{r}
+predict.glm(fit, newdata = data.frame(age = 30, heartrate = 80,
+                                      caffeine = 5, sleep = 8,
+                                      activity = "Meditation", seconds = 1),
+            type = "response")
+```
+
+11\)
+
+```{r}
+exp(-15 + .4*45)/(1 + exp(-15 + .4*45))
+time_seq <- seq(0,100,.5)
+plot(time_seq, exp(-15 + .4*time_seq)/(1 + exp(-15 + .4*time_seq)),
+     type = "l")
+```
+
+```{r}
+beta_0 <- -15
+beta_1 <- .4
+```
+
+12\)
+
+```{r,warning=FALSE}
+p1 <- NULL
+for(i in 1:1000){
+  n <- 160
+  x <- runif(n, 0, 100)
+  model <- beta_0 + beta_1*x
+  prob <- exp(model)/(1 + exp(model))
+  y <- rbinom(n, 1, prob)
+  fit <- glm(y ~ x, family = binomial)
+  p1 <- c(p1,summary(fit)$coefficients[2,4])
+}
+mean(p1 < .05)
+```
+
+13\)
+
+```{r}
+data <- read.table("merrygoround.txt",header = TRUE, skip = 1)
+head(data)
+```
+
+```{r}
+fit <- glm(fall ~ velocity, data = data, family = binomial)
+summary(fit)
+```
+
+```{r}
+library(mfx)
+logitmfx(fit,atmean=FALSE,data=data)
+```
+
+14\)
+
+```{r}
+data <- read.table("viettraps.txt",header = TRUE, sep = "=")
+head(data)
+```
+
+```{r}
+library(MASS)
+fit <- lda(analysis ~ light + camouflage + path + sounds + feeling,data=data)
+fit
+```
+
+```{r}
+plot(fit,dimen=2,col=as.numeric(factor(data$analysis)))
+```
+
+15\)
+
+```{r}
+table(data$analysis,predict(fit,type="response")$class)
+```
+
+16\)
+
+```{r}
+library(VGAM)
+fit_multi <- vglm(analysis ~ light + camouflage + path + sounds + feeling
+                  ,family=multinomial(refLevel="NoThreat"),data=data)
+```
+
+```{r}
+predict(fit_multi, newdata = data.frame(light = 60, camouflage = 50,
+                                        sounds = 220, feeling = "Intense",
+                                        path = "SmallTrail"),
+        type = "response")
+```
+
+17\)
+
+```{r}
+camo_seq <- seq(0,80,.5)
+predictions <- predict(fit_multi, 
+                       newdata = data.frame(light = 20, camouflage = camo_seq,
+                                        sounds = 200, feeling = "Aware",
+                                        path = "ClearTrack"),
+        type = "response")
+head(predictions)
+```
+
+```{r}
+plot(camo_seq, predictions[,"NoThreat"], type = "l", col = "red", ylim = c(0,1))
+lines(camo_seq, predictions[,"Trap"], type = "l", col = "green")
+lines(camo_seq, predictions[,"WarningSystem"], type = "l", col = "purple")
+```
+
+18\)
+
+```{r}
+p_c_1 <- 150/(150 + 300)
+odds_c_1 <- p_c_1/(1 - p_c_1)
+
+p_c_2 <- 300/(300 + 660)
+odds_c_2 <- p_c_2/(1 - p_c_2)
+odds_r_c <- odds_c_1/odds_c_2
+odds_r_c
+x <- c(320,660,80,150,260)
+odds_r_a <- 285*x/(30*860)
+odds_r_a
+
+x1 <- 150 + 285
+x2 <- 300 + 860
+x3 <- 300 + 30
+x4 <- 660 + x
+
+odds_overall <- x1*x3/(x2*x4)
+odds_r_a;odds_overall
+```
+
+19\)
+
+```{r}
+data <- read.table("walmartoutfits.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(count ~ shoes + pants + shirt + hat,data = data, family = poisson)
+summary(fit)
+```
+
+20\)
+
+```{r}
+predict.glm(fit, newdata = data.frame(shoes = "Sneakers", pants = "Shorts", 
+                                      shirt = "Skimpy",
+                                      hat = "None"), type = "response")
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(shoes = "Boots", pants = "Slacks", 
+                                      shirt = "Button",
+                                      hat = "None"), type = "response")
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(shoes = "Boots", pants = "Slacks", 
+                                      shirt = "Tee",
+                                      hat = "Cowboy"), type = "response")
+```
+
+```{r}
+predict.glm(fit, newdata = data.frame(shoes = "Crocs", pants = "Pajama", 
+                                      shirt = "Tee",
+                                      hat = "Baseball"), type = "response")
+```
