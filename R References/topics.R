@@ -177,6 +177,23 @@
 #                                 x		deviance(fit)
 #                                 x	9	Simulating logistic data
 #                                 x		Sample size calculations
+# Discriminant analysis
+# MASS:lda(y~x1+x2,data=data)
+# plot(fit,col=as.numeric(factor(data$y)))
+# plot(fit,dimen=2)
+# table(data$y,predict(fit,type="response")$class)
+# Clustering Analysis
+# K means vs Hierarchical - measures of "closest"
+# sdata<-scale(data)
+# factoextra::fviz_nbclust(sdata,kmeans,method="wss")
+# set.seed(659)
+# fit<-kmeans(sdata,clusters,nstart=25)
+# nstart is how many iterations to find convergence
+# aggregate(data,by=list(cluster=fit$cluster),mean)
+# fviz_cluster(fit,sdata)
+# Decision Tree
+# tidymodels::fit(decision_tree(mode="classification"),y~x1+x2,data=data)
+# predict(fit,new_data=data.frame(x1=9))
 #Log-Linear e^B0 percent change
 #summary(fit)$theta
 #summary(fit)$SE.theta
@@ -326,3 +343,12 @@
 # cov$isolation <- ifelse(cov$flags == "isolation", 1, 0)
 # cov <- as.matrix(cov[,-4])
 # y <- as.numeric(as.factor(data[, 1])) - 1
+
+#convert char to numeric data$time <- as.numeric(as.character(data$time))
+#table(actual values, predicted values)
+#glm(cbind(wins,loses)) if you have event and nonevent lined up next to eachother
+
+#R gives us mu + sigma^2/theta for NB
+
+# XG alt code	dtrain <- xgb.DMatrix(data = x, label = y)
+# XG alt code	fit <- xgb.train(data=dtrain,nrounds=4,params=list(objective = "multi:softmax",num_class=6))
