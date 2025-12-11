@@ -1,0 +1,270 @@
+---
+title: "Final Exam Fall 2024"
+author: "Jack Cunningham"
+format: html
+editor: visual
+---
+
+1\)
+
+```{r}
+x <- 300
+n <- 700
+
+library(binom)
+binom::binom.confint(x,n)
+```
+
+2\)
+
+```{r}
+x_2 <- 400
+n_2 <- 950
+library(DescTools)
+DescTools::BinomDiffCI(x,n,x_2,n_2,method="wald")
+DescTools::BinomDiffCI(x,n,x_2,n_2,method="score")
+```
+
+3\)
+
+```{r}
+library(epitools)
+data <- matrix(c(x, n - x,x_2, n_2 - x_2),nrow = 2, ncol = 2)
+epitools::oddsratio(data,method="fisher")$p.value
+```
+
+4\)
+
+```{r}
+data <- array(c(12,18,21,25,38,25,102,181),dim = c(2,2,2))
+data
+```
+
+```{r}
+DescTools::BreslowDayTest(data)
+```
+
+5\)
+
+```{r}
+data <- c(76,58,54,39,50,61,75)
+probs <- rep(1/7,7)
+data;probs
+```
+
+```{r}
+chisq.test(data,p=probs)
+```
+
+6\)
+
+```{r}
+probs_2 <- c(.2,.15,.14,.07,.1,.14,.2); probs_2;sum(probs_2)
+```
+
+```{r}
+chisq.test(data,p=probs_2)
+```
+
+7\)
+
+```{r}
+data <- read.table("drunkdrivers.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+fit <- glm(drunk ~ speed + braking + turn + accelerate + lights + time + blinker,
+           data = data, family = binomial)
+summary(fit)
+```
+
+8\)
+
+```{r}
+confint.default(fit)
+```
+
+9\)
+
+```{r}
+model_a <- glm(drunk ~ time + speed  + lights + blinker,
+           data = data, family = binomial)
+
+model_b <- glm(drunk ~ speed + time + lights + blinker + I(speed^2) + lights:time,
+           data = data, family = binomial)
+
+summary(model_a);summary(model_b)
+```
+
+```{r}
+library(lmtest)
+lrtest(model_a,model_b)
+```
+
+10\)
+
+```{r}
+logit_value <- 1.24 + -2.4*3 + 3.7*2 - 1.6*1
+exp(logit_value)/(1 + exp(logit_value))
+```
+
+11\)
+
+```{r}
+data <- read.table("personalitytest.txt",header = TRUE)
+head(data)
+sdata <- scale(data)
+```
+
+```{r}
+library(factoextra)
+factoextra::fviz_nbclust(sdata,kmeans,method="wss")
+```
+
+12\)
+
+```{r}
+set.seed(659)
+fit <- kmeans(sdata,6,nstart=25)
+fit
+```
+
+```{r}
+fviz_cluster(fit,sdata)
+```
+
+13\)
+
+```{r}
+data <- read.table("classmplanets.txt",header = TRUE)
+head(data)
+```
+
+```{r}
+cov <- as.matrix(data[,-1])
+y <- as.numeric(as.factor(data[, 1])) - 1
+#Aquatic Earthlike Iced Radiated Thermic
+head(cov);head(y)
+```
+
+```{r}
+library(xgboost)
+fit <- xgboost(data = cov,label = y,nround = 5,
+               objective="multi:softmax",num_class = 5)
+fit
+```
+
+```{r}
+library(vip)
+vip::vip(fit)
+```
+
+14\)
+
+```{r}
+table(y,predict(fit,newdata = cov))
+```
+
+15\)
+
+```{r}
+data <- read.table("bloodtypes.txt",header = TRUE, sep = ",")
+head(data)
+```
+
+```{r}
+library(VGAM)
+fit <- vglm(blood ~ temperature + heartrate + pressure,
+            family=multinomial(refLevel="A"),data=data)
+summary(fit)
+```
+
+```{r}
+AIC(fit);BIC(fit)
+```
+
+16\)
+
+```{r}
+predict(fit, newdata = data.frame(temperature = 98.6,
+                                     heartrate = 80,
+                                     pressure = 90),
+        type = "response")
+```
+
+17\)
+
+```{r}
+cov <- as.matrix(data[,-1])
+y <- as.numeric(as.factor(data[, 1])) - 1
+#A AB B O
+head(cov);head(y)
+```
+
+```{r}
+fit <- xgboost(data = cov,label = y,nround = 10,
+               objective="multi:softmax",num_class = 4)
+fit
+```
+
+```{r}
+vip(fit)
+```
+
+18\)
+
+```{r}
+x <- c(16,25,32,48,71)
+odds_A <- 4*5/(3*8)
+odds_M <- 2*x/(12*3)
+odds_overall <- (4 + 2)*(5 + x) / ((8 + 12) * (3 + 3))
+odds_A;odds_M;odds_overall
+```
+
+19\)
+
+```{r}
+x_seq <- seq(0,100,.5)
+model_1 <- exp(-15 + .4*x_seq)/(1 + exp(-15 + .4*x_seq))
+plot(x_seq,model_1, type = "l")
+
+model_2 <- exp(.05*x_seq)/(1 + exp(.05*x_seq))
+plot(x_seq,model_2, type = "l", ylim = c(0,1))
+
+model_3 <- exp(-1 + .03*x_seq)/(1 + exp(-1 + .03*x_seq))
+plot(x_seq,model_3, type = "l", ylim = c(0,1))
+
+model_4 <- exp(-5 + .1*x_seq)/(1 + exp(-5 + .1*x_seq))
+plot(x_seq,model_4, type = "l", ylim = c(0,1))
+```
+
+20\)
+
+```{r,warning=FALSE}
+niter <- 5000
+p <- matrix(NA,nrow = niter, ncol = 4)
+for(i in 1:niter){
+  n <- 120
+  x1 <- runif(n, 0, 100)
+  x2 <- runif(n, 0, 100)
+  x3 <- runif(n, 0, 100)
+  x4 <- runif(n, 0, 100)
+  model1 <- -15 + .4*x1
+  model2 <- -5 + .1*x2
+  model3 <- -1 + .03*x3
+  model4 <- .05*x4
+  prob1 <- exp(model1)/(1 + exp(model1))
+  prob2 <- exp(model2)/(1 + exp(model2))
+  prob3 <- exp(model3)/(1 + exp(model3))
+  prob4 <- exp(model4)/(1 + exp(model4))
+  prob_avg <- (prob1 + prob2 + prob3 + prob4)/4
+  y <- rbinom(n,1,prob_avg)
+  fit <- glm(y ~ x1 + x2 + x3 + x4, family = binomial)
+  p[i,1] <- summary(fit)$coefficients[2,4]
+  p[i,2] <- summary(fit)$coefficients[3,4]
+  p[i,3] <- summary(fit)$coefficients[4,4]
+  p[i,4] <- summary(fit)$coefficients[5,4]
+}
+mean(p[,1] < .05|p[,2] < .05|p[,3] < .05|p[,4] < .05)
+```
